@@ -28,6 +28,7 @@ class m210611_031020_create_userprofile_table extends Migration
          'idCard' => $this->string(15),
          'childNumber' => $this->integer(1),
          'livesAlone' => "ENUM('SI', 'NO')",
+         'status' => "ENUM('ACTIVE', 'INACTIVE', 'DELETED')",
          'created_at' => $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP'),
          'updated_at' => $this->timestamp()->defaultValue(null)->append('ON UPDATE CURRENT_TIMESTAMP'),
       ]);
