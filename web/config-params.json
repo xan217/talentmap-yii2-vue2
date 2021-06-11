@@ -1,0 +1,122 @@
+{
+   "base_table": "userprofile",
+   "base_table_requirements": {
+      "tables": [],
+      "constraints": [
+         {
+            "table": "userprofile",
+            "field": "status",
+            "condition": "=",
+            "value": "ACTIVE"
+         }
+      ]
+   },
+   "node_info": {
+      "ID": "userprofile.pk_id",
+      "name": "userprofile.name",
+      "lastname": "useprofile.lastname"
+   },
+   "user_card": {
+      "personal": [
+         "userprofile.name",
+         "userprofile.lastname",
+         "userprofile.idCard",
+         "userprofile.local_phone",
+         "userprofile.phone"
+      ],
+      "family": [
+         "userprofile.civil_status",
+         "userprofile.childNumber",
+         "homeType.name"
+      ],
+      "health": [
+         "genderType.name",
+         "bloodType.name",
+         "smokerType.name",
+         "drinkerType.name"
+      ],
+      "residence": [
+         "userprofile.livesAlone",
+         "transportType.name",
+         "cityType.name",
+         "regionType.name",
+         "address.streetType",
+         "address.streetNumber",
+         "address.streetChar",
+         "address.streetCardinal",
+         "address.intersectionNumber",
+         "address.intersectionChar",
+         "address.intersectionCardinal",
+         "address.buildingNumber",
+         "address.complement",
+         "address.details"
+      ],
+      "development": [
+         "educationLevelType.name",
+         "educationStatusType.name",
+         "languageType.name",
+         "employeeType.name"
+      ]
+   },
+   "conditions": [
+      {
+         "name": "Género",
+         "table": "civilStatus",
+         "type": "ACQ",
+         "field": "name",
+         "conditions": []
+      },
+      {
+         "name": "Tipo de Vivienda",
+         "table": "home",
+         "type": "ACQ",
+         "field": "name",
+         "conditions": []
+      },
+      {
+         "name": "Tipo de Transporte",
+         "table": "transport",
+         "type": "ACQ",
+         "field": "name",
+         "conditions": []
+      },
+      {
+         "name": "Tipo de Fumador",
+         "table": "smoker",
+         "type": "ACQ",
+         "field": "name",
+         "conditions": []
+      },
+      {
+         "name": "Frecuencia de ingesta de alcohol",
+         "table": "drinker",
+         "type": "ACQ",
+         "field": "name",
+         "conditions": []
+      },
+      {
+         "name": "Tipo de empleo",
+         "table": "employee",
+         "type": "ACQ",
+         "field": "name",
+         "conditions": []
+      },
+      {
+         "name": "Ciudad de residencia",
+         "table": "city",
+         "type": "REL",
+         "rel": "address",
+         "field": "name",
+         "conditions": []
+      },
+      {
+         "name": "Municipio de residencia",
+         "table": "region",
+         "type": "REL",
+         "rel": "address",
+         "field": "name",
+         "conditions": []
+      }
+
+   ]
+}
