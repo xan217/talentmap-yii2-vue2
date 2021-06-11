@@ -14,8 +14,8 @@ class m210610_223423_create_address_table extends Migration
    {
       $this->createTable('{{%address}}', [
          'pk_id' => $this->primaryKey(),
-         'fk_region_id' => $this->integer()->notNull(),
-         'fk_city_id' => $this->integer()->notNull(),
+         'fk_t_region_id' => $this->integer()->notNull(),
+         'fk_t_city_id' => $this->integer()->notNull(),
          'streetType' => "ENUM('CARRERA', 'AUTOPISTA', 'CALLE', 'AVENIDA', 'CIRCULAR')",
          'streetNumber' => $this->string(3),
          'streetChar' => $this->string(2),
@@ -28,11 +28,11 @@ class m210610_223423_create_address_table extends Migration
          'details' => $this->string(100)
       ]);
       
-      $this->createIndex( 'idx_address-region_id', 'address', 'fk_region_id' );
-      $this->addForeignKey( 'fk_address-region_id', 'address', 'fk_region_id', 'regionType', 'pk_id', 'CASCADE' );
+      $this->createIndex( 'idx_address-region_id', 'address', 'fk_t_region_id' );
+      $this->addForeignKey( 'fk_address-region_id', 'address', 'fk_t_region_id', 'regionType', 'pk_id', 'CASCADE' );
       
-      $this->createIndex( 'idx_address-city_id', 'address', 'fk_city_id' );
-      $this->addForeignKey( 'fk_address-city_id', 'address', 'fk_city_id', 'cityType', 'pk_id', 'CASCADE' );
+      $this->createIndex( 'idx_address-city_id', 'address', 'fk_t_city_id' );
+      $this->addForeignKey( 'fk_address-city_id', 'address', 'fk_t_city_id', 'cityType', 'pk_id', 'CASCADE' );
    }
    
    /**
