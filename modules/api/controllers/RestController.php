@@ -15,29 +15,65 @@ class RestController extends Controller
       return \Yii::$app->params['constraints'];
    }
 
-   private function buildQuery( string $selects = null, array $where = null, bool $distinct = false ){
+   private function buildQuery( 
+      array $selects = null, 
+      bool $distinct = false, 
+      string $from = null, 
+      array $joins = null, 
+      array $wheres = null, 
+      array $orderBy = null,
+      array $groupBy = null
+   ){
       $params = self::params();
 
       $baseQuery = new Query;
-      $baseQuery->from( $params['base_table']['name'] );
-      if( sizeof( $params['base_table_requirements']['tables']) > 0 ){
-         foreach( $params['base_table_requirements']['tables'] as $tableKey => $tableDetails ) {
-            $baseQuery->join(
-               'LEFT JOIN', 
-               $tableDetails['name'], 
-               $tableDetails['name'].'.'.$tableDetails['fk'].' = '.$params['base_table']['name'].'.'.$params['base_table']['pk'].'');   
+      if( $selects !== null ) {
+         sizeof( $selects = 1 )
+            ? $baseQuery->select( $selects[0] )
+            : $baseQuery->select( implode(' , ', $selects) );
+      }
+
+      if( $from === null ){
+         $baseQuery->from( $params['base_table']['name'] );
+         if( sizeof( $params['base_table_requirements']['tables']) > 0 ){
+            foreach( $params['base_table_requirements']['tables'] as $tableKey => $tableDetails ) {
+               $baseQuery->join(
+                  'LEFT JOIN', 
+                  $tableDetails['name'], 
+                  $tableDetails['name'].'.'.$tableDetails['fk'].' = '.$params['base_table']['name'].'.'.$params['base_table']['pk'].'');   
+            }
+         }
+         if( sizeof( $params['base_table_requirements']['constraints']) > 0 ){
+            foreach ( $params['base_table_requirements']['constraints'] as $constraintKey => $constraintDetails) {
+               $baseQuery->where( $constraintDetails['table'].'.'.$constraintDetails['field'].' '.$constraintDetails['condition'].' "'.$constraintDetails['value'].'"' );
+            }
          }
       }
-      if( sizeof( $params['base_table_requirements']['constraints']) > 0 ){
-         foreach ( $params['base_table_requirements']['constraints'] as $constraintKey => $constraintDetails) {
-            $baseQuery->where( $constraintDetails['table'].'.'.$constraintDetails['field'].' '.$constraintDetails['condition'].' "'.$constraintDetails['value'].'"' );
+      else{
+         $baseQuery->from( $from );
+      }
+
+      if( $joins !== null ){
+         foreach( $joins as $key => $join ){
+            $baseQuery->join( $join['type'], $join['table'], $join['condition'] );
+         }
+      }
+      
+      if( $where !== null ) {
+         foreach( $wheres as $key => $where ){
+            $baseQuery->where( $where );
          }
       }
 
-      if( $selects !== null ) $baseQuery->select( $selects );
-      if( $where !== null ) {
-         foreach( $where as $key => $condition ){
-            $baseQuery->where( $condition );
+      if( $orderBy !== null ){
+         foreach ($orderBy as $key => $ordering) {
+            $baseQuery->orderBy( $ordering['order'], $ordering['type'] );
+         }
+      }
+      
+      if( $groupBy !== null ){
+         foreach ($groupBy as $key => $grouping) {
+            $baseQuery->groupBy( $grouping['group'] );
          }
       }
 
@@ -83,11 +119,18 @@ class RestController extends Controller
                      }
                   }
                   else{
-                     $rows = new Query;
-                     $rows->select( $condition['table'].'.'.$condition['field'].' as field, '.$condition['table'].'.'.$condition['pk'].' as pk' );
-                     $rows->from( $condition['table'] );
-                     $rows->orderBy( $condition['table'].'.'.$condition['field'], 'ASC' );
-                     $acquired_values = $rows->all();
+                     $selects = [
+                        $condition['table'].'.'.$condition['field'].' as field',
+                        $condition['table'].'.'.$condition['pk'].' as pk'
+                     ];
+                     $table = $condition['table'];
+                     $orderBy = [
+                        [ 
+                           'order' => $condition['table'].'.'.$condition['field'], 
+                           'type'=> 'ASC' 
+                        ]
+                     ];
+                     $acquired_values = self::buildQuery( $selects, false, $table, null, null, $orderBy, null )->all();
                      $condition_parsed['values'] = array_map( 
                         function($item){
                            return [
@@ -123,27 +166,7 @@ class RestController extends Controller
                      }
                   }
                   else{
-                     $select = $condition['table'].'.'.$condition['field'].' as field, '.$condition['table'].'.'.$condition['pk'];
-                     
-                     $rows = self::buildQuery( $select );
-                     $rows->join( 'JOIN', $condition['table'], $condition['join'] )->distinct();
-                     $rows->orderBy( $condition['table'].'.'.$condition['field'], 'ASC' );
-                     $acquired_values = $rows->all();
-                     
-                     $condition_parsed['values'] = array_map( 
-                                                      function($item){
-                                                         return [
-                                                            'label' => strtoupper(trim($item['field'])), 
-                                                            'value' => strtoupper(trim($item['field']))
-                                                         ];
-                                                      }, 
-                                                      array_filter( 
-                                                         $acquired_values, 
-                                                         function($item) { 
-                                                            return $item['field'] !== '' && $item['field'] !== ' '; 
-                                                         }
-                                                      )
-                                                   );
+                     // #TODO: Define process when the values needs to be retrieved
                   }
                   break;
 
@@ -171,9 +194,10 @@ class RestController extends Controller
       \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
       if( \Yii::$app->request->isGet ){
+         $params = self::params();
          
          $select = 'count(*) as qty';
-         $rows = self::buildQuery( $select, null, true );
+         $rows = self::buildQuery( $select, null, true, null, null );
          $data = $rows->all();
 
          if( sizeOf($data) == 0 ){
@@ -223,18 +247,83 @@ class RestController extends Controller
                            return array_keys( $constraint )[0].'.name = '.$constraint['name'];
                         },
                         $constraintGroup);
-            $rows = self::buildQuery( $select, $wheres, true );
-            
+               
+            $joins = [];
             foreach( $constraintGroup as $key => $constraint ){
                $join = array_filter(
-                        $params['conditions'], 
-                        function($condition){
-                           return $condition['table'] === $key;
-                        }
-                     );
-               $rows->join( 'JOIN', $key.'.name', $join[0] );
+                  $params['conditions'], 
+                  function($condition){
+                     return $condition['table'] === $key;
+                  }
+               )[0];
+               $joins[] = [
+                  'type' => 'LEFT JOIN',
+                  'table' => $join['table'],
+                  'condition' => $join['join']
+               ];
             }
-            $data[] = $rows->all();
+            $data[] = self::buildQuery( $select, true, null, null, $wheres, null, null )->all();
+         }
+         return [
+            'code' => '200',
+            'type' => 'success',
+            'message' => 'OK',
+            'data' => $data
+         ];
+      }
+      return [
+         'code' => '405',
+         'type' => 'warning',
+         'message' => 'Tipo de solicitud no aceptada',
+         'data' => []
+      ];
+   }
+
+   public function actionGetGraphics(){
+      Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+      if( Yii::$app->request->isPost ){
+         $params = self::params();
+         $req = Yii::$app->request->post();
+
+         if(sizeof($req) == 0){ 
+            return [
+               'code' => '400',
+               'type' => 'warning',
+               'data' => [
+                  'message' => 'No se definieron grupos de condiciones'
+               ]
+            ];
+         }
+         $data = [];
+
+         $selects = [ 'name' ];
+         $orderBy = [
+            'order' => $req.'.name',
+            'type' => 'ASC'
+         ];
+         $groupBy = [ $req.'.name' ];
+         $values = self::buildQuery( $selects, false, $req, null, null, $orderBy, null )->all();
+         
+         foreach ($values as $key => $value) {
+            $selects = [ 'count(*)' ];
+            $where = [
+               $req.'.name = '.$value['name']
+            ];
+            $conditionJoin = array_filter(
+                                 $params, 
+                                 function($condition){
+                                    return $condition['table'] == $req; 
+                                 }
+                              );
+            $join = [
+               'type' => 'LEFT JOIN',
+               'table' => $req,
+               'condition' => $conditionJoin[0]['join']
+            ];
+
+            $qty = self::buildQuery( $selects, true, null, $join, $where, $orderBy, $groupBy )->all();
+            $data[] = [ $value['name'] => $qty ];
          }
          return [
             'code' => '200',
