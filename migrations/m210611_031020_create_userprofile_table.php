@@ -15,7 +15,7 @@ class m210611_031020_create_userprofile_table extends Migration
       $this->createTable('{{%userprofile}}', [
          'pk_id' => $this->primaryKey(),
          'fk_t_blood_id' => $this->integer()->notNull(),
-         'fk_t_civilStatus_id' => $this->integer()->notNull(),
+         'fk_t_civilstatus_id' => $this->integer()->notNull(),
          'fk_t_home_id' => $this->integer()->notNull(),
          'fk_t_transport_id' => $this->integer()->notNull(),
          'fk_t_smoker_id' => $this->integer()->notNull(),
@@ -36,8 +36,8 @@ class m210611_031020_create_userprofile_table extends Migration
       $this->createIndex( 'idx_userprofile-blood_id', 'userprofile', 'fk_t_blood_id' );
       $this->addForeignKey( 'fk_userprofile-blood_id', 'userprofile', 'fk_t_blood_id', 'bloodType', 'pk_id', 'CASCADE' );
       
-      $this->createIndex( 'idx_userprofile-civilStatus_id', 'userprofile', 'fk_t_civilStatus_id' );
-      $this->addForeignKey( 'fk_userprofile-civilStatus_id', 'userprofile', 'fk_t_civilStatus_id', 'civilStatusType', 'pk_id', 'CASCADE' );
+      $this->createIndex( 'idx_userprofile-civilStatus_id', 'userprofile', 'fk_t_civilstatus_id' );
+      $this->addForeignKey( 'fk_userprofile-civilStatus_id', 'userprofile', 'fk_t_civilstatus_id', 'civilStatusType', 'pk_id', 'CASCADE' );
       
       $this->createIndex( 'idx_userprofile-home_id', 'userprofile', 'fk_t_home_id' );
       $this->addForeignKey( 'fk_userprofile-home_id', 'userprofile', 'fk_t_home_id', 'homeType', 'pk_id', 'CASCADE' );
