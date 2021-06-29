@@ -1,4 +1,4 @@
-# app
+# mapa-de-talentos
 
 ## Project setup
 ```
