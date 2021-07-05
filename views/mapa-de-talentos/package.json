@@ -1,6 +1,6 @@
 {
   "name": "mapa-de-talentos",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -9,9 +9,15 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "d3": "^6.2.0",
     "echarts": "^5.1.2",
+    "materialize-css": "^1.0.0-rc.2",
     "node-sass": "^6.0.0",
     "vue": "^2.6.11",
+    "vue-materialize-datatable": "^1.0.4",
+    "vue-property-decorator": "^9.1.2",
+    "vue-router": "^3.4.7",
+    "vue-toast-notification": "^0.6.2",
     "vuetify": "^2.4.0"
   },
   "devDependencies": {

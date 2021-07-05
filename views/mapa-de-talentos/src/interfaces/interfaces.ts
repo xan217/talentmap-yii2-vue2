@@ -43,7 +43,7 @@ export interface User {
    }
 }
 
-export interface Constraint {
+export interface Searchmodel {
    blood_type: string,
    child_number: number,
    city_type: string,
@@ -80,6 +80,18 @@ export interface ButtonMenu {
    size: string,
    color: string,
    attrs: string
+}
+
+export interface Item {
+   label: string,
+   value: string
+}
+
+export interface Constraint {
+   id: number,
+   model: string,
+   name: string,
+   items: Item[]
 }
 
 /*****************************************************************/
@@ -127,7 +139,7 @@ export const userDefault = {
    }
 }
 
-export const constraintDefault = { 
+export const searchmodelDefault = { 
    blood_type: "",
    child_number: null,
    city_type: "",

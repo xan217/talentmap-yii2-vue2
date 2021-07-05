@@ -14,6 +14,7 @@ class m210610_223230_create_cityType_table extends Migration
    {
       $this->createTable('{{%cityType}}', [
          'pk_id' => $this->primaryKey(),
+         'fk_t_region_id' => $this->primaryKey(),
          'name' => $this->string()->notNull(),
       ]);
 

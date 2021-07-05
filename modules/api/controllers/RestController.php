@@ -11,10 +11,58 @@ use yii\db\Query;
 */
 class RestController extends Controller
 {
+   /**
+   * List of allowed domains.
+   * Note: Restriction works only for AJAX (using CORS, is not secure).
+   *
+   * @return array List of domains, that can access to this API
+   */
+   public static function allowedDomains()
+   {
+      return [
+         'http://localhost:8080',
+      ];
+   }
+   
+   /**
+   * @inheritdoc
+   */
+   public function behaviors()
+   {
+      return array_merge(parent::behaviors(), [
+         // For cross-domain AJAX request
+         'corsFilter'  => [
+            'class' => \yii\filters\Cors::className(),
+            'cors'  => [
+               // restrict access to domains:
+               'Origin'                           => static::allowedDomains(),
+               'Access-Control-Request-Method'    => ['*'],
+               'Access-Control-Request-Headers'   => ['*'],
+               'Access-Control-Allow-Credentials' => true,
+               'Access-Control-Max-Age'           => 3600,                 // Cache (seconds)
+            ],
+         ],
+         
+      ]);
+   }
+   
    private function params() {
       return \Yii::$app->params['constraints'];
    }
-
+   
+   /**
+   * List of allowed domains.
+   * Note: Restriction works only for AJAX (using CORS, is not secure).
+   *
+   * @param selects string or array of strings
+   * @param distinct boolean
+   * @param from string name of table
+   * @param joins object( type, table, condition )
+   * @param wheres array of strings
+   * @param orderBy array of object( order, type )
+   * @param groupBy arrray of object( group )
+   * @return array List of domains, that can access to this API
+   */
    private function buildQuery( 
       array $selects = null, 
       bool $distinct = false, 
@@ -25,14 +73,14 @@ class RestController extends Controller
       array $groupBy = null
    ){
       $params = self::params();
-
+      
       $baseQuery = new Query;
       if( $selects !== null ) {
-         sizeof( $selects = 1 )
+         sizeof( $selects ) == 1
             ? $baseQuery->select( $selects[0] )
             : $baseQuery->select( implode(' , ', $selects) );
       }
-
+      
       if( $from === null ){
          $baseQuery->from( $params['base_table']['name'] );
          if( sizeof( $params['base_table_requirements']['tables']) > 0 ){
@@ -52,19 +100,19 @@ class RestController extends Controller
       else{
          $baseQuery->from( $from );
       }
-
+      
       if( $joins !== null ){
          foreach( $joins as $key => $join ){
             $baseQuery->join( $join['type'], $join['table'], $join['condition'] );
          }
       }
       
-      if( $where !== null ) {
+      if( $wheres !== null ) {
          foreach( $wheres as $key => $where ){
             $baseQuery->where( $where );
          }
       }
-
+      
       if( $orderBy !== null ){
          foreach ($orderBy as $key => $ordering) {
             $baseQuery->orderBy( $ordering['order'], $ordering['type'] );
@@ -76,10 +124,10 @@ class RestController extends Controller
             $baseQuery->groupBy( $grouping['group'] );
          }
       }
-
+      
       return $baseQuery;
    }
-   
+      
    public function actionGetConditions(){
       \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
       $params = self::params();
@@ -89,27 +137,21 @@ class RestController extends Controller
          
          foreach($params['conditions'] as $key => $condition){
             
-            $condition_parsed = [];
+            $condition_parsed = [
+               'id'     => $key,
+               'field'  => $condition['table'],
+               'label'  => $condition['name'],
+               'type'   => $condition['type'],
+               'values' => []
+            ];
             
             switch($condition['type']){
                case 'STC': 
-                  
-                  $condition_parsed['name']   = $key;
-                  $condition_parsed['type']   = $condition['type'];
-                  $condition_parsed['field']  = $condition['field'];
-                  $condition_parsed['label']  = $condition['label'];
                   $condition_parsed['values'] = $condition['values'];
                   
                   break;
-               
+                  
                case 'ACQ':
-                  $condition_parsed = [
-                     'name' => $key,
-                     'type' => $condition['type'],
-                     'field' => $condition['field'],
-                     'label' => $condition['name'],
-                     'values' => []
-                  ];
                   if(isset($condition['values'])){
                      foreach($condition['values'] as $subcondition){
                         $condition_parsed['values'][] = [ 
@@ -128,9 +170,10 @@ class RestController extends Controller
                         [ 
                            'order' => $condition['table'].'.'.$condition['field'], 
                            'type'=> 'ASC' 
-                        ]
-                     ];
-                     $acquired_values = self::buildQuery( $selects, false, $table, null, null, $orderBy, null )->all();
+                           ]
+                        ];
+                     $acquired_values = self::buildQuery( $selects, false, $table, null, null, $orderBy, null );
+                     $acquired_values = $acquired_values->all();
                      $condition_parsed['values'] = array_map( 
                         function($item){
                            return [
@@ -147,16 +190,8 @@ class RestController extends Controller
                      );
                   }
                   break;
-
-               case 'REL': 
-                  $condition_parsed = [
-                     'name' => $key,
-                     'type' => $condition['type'],
-                     'field' => $condition['field'],
-                     'label' => $condition['name'],
-                     'values' => []
-                  ];
-                  
+                        
+               case 'REL':
                   if(isset($condition['values'])){
                      foreach($condition['values'] as $subcondition){
                         $condition_parsed['values'][] = [ 
@@ -166,15 +201,44 @@ class RestController extends Controller
                      }
                   }
                   else{
-                     // #TODO: Define process when the values needs to be retrieved
+                     $selects = [
+                        $condition['table'].'.'.$condition['field'].' as field',
+                        $condition['table'].'.'.$condition['pk'].' as pk'
+                     ];
+                     $table = $condition['table'];
+                     $orderBy = [
+                        [ 
+                           'order' => $condition['table'].'.'.$condition['field'], 
+                           'type'=> 'ASC' 
+                           ]
+                        ];
+                     $acquired_values = self::buildQuery( $selects, false, $table, null, null, $orderBy, null );
+                     $acquired_values = $acquired_values->all();
+                     $condition_parsed['values'] = array_map( 
+                        function($item){
+                           return [
+                              'label' => strtoupper(trim($item['field'])), 
+                              'value' => strtoupper(trim($item['pk']))
+                           ];
+                        }, 
+                        array_filter( 
+                           $acquired_values, 
+                           function($item) { 
+                              return $item['field'] !== '' && $item['field'] !== ' '; 
+                           }
+                        )
+                     );
                   }
+                  break;
+               case 'DEP': 
+                  $condition_parsed['requirements'] = $condition['required_tables'];
                   break;
 
                default: break;
             }
             $conditionalGroup[] = $condition_parsed;
          }
-               
+                     
          return [
             'code' => '200',
             'type' => 'success',
@@ -190,16 +254,58 @@ class RestController extends Controller
       ];
    }
 
-   public function actionGetQty(){
+   public function actionGetSubcondition() {
       \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+      
+      if( \Yii::$app->request->isGet ){
+         $params = self::params();
+         $tableFrom = \Yii::$app->request->getBodyParam('table');
 
+         $subcondition = array_filter($params, function( $param ) {
+            return $param->table === $tableFrom;
+         });
+
+         $select = '*';
+         $from = $subcondition['required_tables']['table'];
+         $where = $subcondition['required_tables']['condition'];
+         
+         $rows = self::buildQuery( $select, false, $from, null, $where, null, null );
+         $data = $rows->all();
+         
+         if( sizeOf($data) == 0 ){
+            return [
+               'code' => '204',
+               'type' => 'warning',
+               'message' => 'Ningún dato encontrado',
+               'data' => []
+            ];
+         }
+         return [
+            'code' => '200',
+            'type' => 'success',
+            'message' => 'OK',
+            'data' => $data
+         ];
+      }
+      return [
+         'code' => '405',
+         'type' => 'warning',
+         'message' => 'Tipo de solicitud no aceptada',
+         'data' => []
+      ];
+   }
+               
+   public function actionGetQty()
+   {
+      \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+      
       if( \Yii::$app->request->isGet ){
          $params = self::params();
          
          $select = 'count(*) as qty';
          $rows = self::buildQuery( $select, null, true, null, null );
          $data = $rows->all();
-
+         
          if( sizeOf($data) == 0 ){
             return [
                'code' => '204',
@@ -222,13 +328,13 @@ class RestController extends Controller
          'data' => []
       ];
    }
-
+               
    public function actionGetGroups(){
       Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
+      
       if( Yii::$app->request->isPost ){
          $req = Yii::$app->request->post();
-
+         
          if(sizeof($req) == 0){ 
             return [
                'code' => '400',
@@ -239,14 +345,15 @@ class RestController extends Controller
             ];
          }
          $data = [];
-
+            
          foreach ($req as $constraintKey => $constraintGroup) {
             $selects = implode( ', ', $params['node_info'] );
             $wheres = array_map( 
-                        function($constraint){
-                           return array_keys( $constraint )[0].'.name = '.$constraint['name'];
-                        },
-                        $constraintGroup);
+               function($constraint){
+                  return array_keys( $constraint )[0].'.name = '.$constraint['name'];
+               },
+               $constraintGroup
+            );
                
             $joins = [];
             foreach( $constraintGroup as $key => $constraint ){
@@ -278,14 +385,14 @@ class RestController extends Controller
          'data' => []
       ];
    }
-
+                        
    public function actionGetGraphics(){
       Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
+      
       if( Yii::$app->request->isPost ){
          $params = self::params();
          $req = Yii::$app->request->post();
-
+         
          if(sizeof($req) == 0){ 
             return [
                'code' => '400',
@@ -296,7 +403,7 @@ class RestController extends Controller
             ];
          }
          $data = [];
-
+         
          $selects = [ 'name' ];
          $orderBy = [
             'order' => $req.'.name',
@@ -311,17 +418,17 @@ class RestController extends Controller
                $req.'.name = '.$value['name']
             ];
             $conditionJoin = array_filter(
-                                 $params, 
-                                 function($condition){
-                                    return $condition['table'] == $req; 
-                                 }
-                              );
+               $params, 
+               function($condition){
+                  return $condition['table'] == $req; 
+               }
+            );
             $join = [
                'type' => 'LEFT JOIN',
                'table' => $req,
                'condition' => $conditionJoin[0]['join']
             ];
-
+            
             $qty = self::buildQuery( $selects, true, null, $join, $where, $orderBy, $groupBy )->all();
             $data[] = [ $value['name'] => $qty ];
          }
@@ -340,4 +447,4 @@ class RestController extends Controller
       ];
    }
 }
-                     
+                                 

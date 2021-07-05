@@ -4,7 +4,7 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
-   'id' => 'basic',
+   'id' => 'mdt-be',
    'basePath' => dirname(__DIR__),
    'bootstrap' => ['log'],
    'aliases' => [
@@ -22,6 +22,7 @@ $config = [
          'cookieValidationKey' => 'uRQ04f6JOjWR-tIHlJOQg_AuKOGQ6_G5',
          'parsers' => [
             'application/json' => 'yii\web\JsonParser',
+            'multipart/form-data' => 'yii\web\MultipartFormDataParser'
          ],
       ],
       'cache' => [

@@ -14,7 +14,7 @@ class ApiController extends Controller
    {
       return [
          //'*',                        // star allows all domains
-         'http://localhost',
+         'http://localhost:8080',
          //'http://newstetic.vcb.com.co/',
          //'http://test2.example.com',
       ];
@@ -41,6 +41,10 @@ class ApiController extends Controller
    }
    
    private function loadConditions(){
+      $conditions = json_decode(file_get_contents(Url::base(true).'/config-params.json'));
+      return $conditions;
+   }
+   private function actionGetConditions(){
       $conditions = json_decode(file_get_contents(Url::base(true).'/config-params.json'));
       return $conditions;
    }

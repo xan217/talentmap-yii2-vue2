@@ -30,6 +30,7 @@ class Citytype extends \yii\db\ActiveRecord
         return [
             [['name'], 'required'],
             [['name'], 'string', 'max' => 255],
+            [['fk_t_region_id'], 'integer'],
         ];
     }
 
@@ -40,6 +41,7 @@ class Citytype extends \yii\db\ActiveRecord
     {
         return [
             'pk_id' => 'Pk ID',
+            'fk_t_region_id' => 'Fk T Region ID',
             'name' => 'Name',
         ];
     }
@@ -51,6 +53,6 @@ class Citytype extends \yii\db\ActiveRecord
      */
     public function getAddresses()
     {
-        return $this->hasMany(Address::className(), ['fk_city_id' => 'pk_id']);
+        return $this->hasMany(Address::className(), ['fk_t_city_id' => 'pk_id']);
     }
 }

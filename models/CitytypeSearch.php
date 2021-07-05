@@ -19,6 +19,7 @@ class CitytypeSearch extends Citytype
         return [
             [['pk_id'], 'integer'],
             [['name'], 'safe'],
+            [['fk_t_region_id'], 'integer'],
         ];
     }
 

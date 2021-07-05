@@ -53,20 +53,21 @@ class Userprofile extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['fk_t_blood_id', 'fk_t_civilStatus_id', 'fk_t_home_id', 'fk_t_transport_id', 'fk_t_smoker_id', 'fk_t_drinker_id', 'fk_t_gender_id', 'fk_t_employee_id', 'fk_address_id'], 'required'],
-            [['fk_t_blood_id', 'fk_t_civilStatus_id', 'fk_t_home_id', 'fk_t_transport_id', 'fk_t_smoker_id', 'fk_t_drinker_id', 'fk_t_gender_id', 'fk_t_employee_id', 'fk_address_id', 'childNumber'], 'integer'],
-            [['livesAlone', 'status'], 'string'],
+            [['fk_t_blood_id', 'fk_t_civilstatus_id', 'fk_t_home_id', 'fk_t_transport_id', 'fk_t_smoker_id', 'fk_t_drinker_id', 'fk_t_gender_id', 'fk_t_employee_id', 'fk_address_id'], 'default', 'value' => null],
+            [['fk_t_blood_id', 'fk_t_civilstatus_id', 'fk_t_home_id', 'fk_t_transport_id', 'fk_t_smoker_id', 'fk_t_drinker_id', 'fk_t_gender_id', 'fk_t_employee_id', 'fk_address_id', 'childNumber'], 'integer'],
+            [['status'], 'string'],
+            [['livesAlone'], 'boolean'],
+            [['idCard'], 'string', 'max' => 15],
             [['created_at', 'updated_at'], 'safe'],
             [['name', 'lastname'], 'string', 'max' => 100],
-            [['idCard'], 'string', 'max' => 15],
+            [['fk_t_home_id'], 'exist', 'skipOnError' => true, 'targetClass' => Hometype::className(), 'targetAttribute' => ['fk_t_home_id' => 'pk_id']],
             [['fk_t_blood_id'], 'exist', 'skipOnError' => true, 'targetClass' => Bloodtype::className(), 'targetAttribute' => ['fk_t_blood_id' => 'pk_id']],
-            [['fk_t_civilStatus_id'], 'exist', 'skipOnError' => true, 'targetClass' => Civilstatustype::className(), 'targetAttribute' => ['fk_t_civilStatus_id' => 'pk_id']],
+            [['fk_t_gender_id'], 'exist', 'skipOnError' => true, 'targetClass' => Gendertype::className(), 'targetAttribute' => ['fk_t_gender_id' => 'pk_id']],
+            [['fk_t_smoker_id'], 'exist', 'skipOnError' => true, 'targetClass' => Smokertype::className(), 'targetAttribute' => ['fk_t_smoker_id' => 'pk_id']],
             [['fk_t_drinker_id'], 'exist', 'skipOnError' => true, 'targetClass' => Drinkertype::className(), 'targetAttribute' => ['fk_t_drinker_id' => 'pk_id']],
             [['fk_t_employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => Employeetype::className(), 'targetAttribute' => ['fk_t_employee_id' => 'pk_id']],
-            [['fk_t_gender_id'], 'exist', 'skipOnError' => true, 'targetClass' => Gendertype::className(), 'targetAttribute' => ['fk_t_gender_id' => 'pk_id']],
-            [['fk_t_home_id'], 'exist', 'skipOnError' => true, 'targetClass' => Hometype::className(), 'targetAttribute' => ['fk_t_home_id' => 'pk_id']],
-            [['fk_t_smoker_id'], 'exist', 'skipOnError' => true, 'targetClass' => Smokertype::className(), 'targetAttribute' => ['fk_t_smoker_id' => 'pk_id']],
             [['fk_t_transport_id'], 'exist', 'skipOnError' => true, 'targetClass' => Transporttype::className(), 'targetAttribute' => ['fk_t_transport_id' => 'pk_id']],
+            [['fk_t_civilstatus_id'], 'exist', 'skipOnError' => true, 'targetClass' => Civilstatustype::className(), 'targetAttribute' => ['fk_t_civilstatus_id' => 'pk_id']],
         ];
     }
 
@@ -78,7 +79,7 @@ class Userprofile extends \yii\db\ActiveRecord
         return [
             'pk_id' => 'Pk ID',
             'fk_t_blood_id' => 'Fk T Blood ID',
-            'fk_t_civilStatus_id' => 'Fk T Civil Status ID',
+            'fk_t_civilstatus_id' => 'Fk T Civil Status ID',
             'fk_t_home_id' => 'Fk T Home ID',
             'fk_t_transport_id' => 'Fk T Transport ID',
             'fk_t_smoker_id' => 'Fk T Smoker ID',
@@ -134,7 +135,7 @@ class Userprofile extends \yii\db\ActiveRecord
      */
     public function getFkTCivilStatus()
     {
-        return $this->hasOne(Civilstatustype::className(), ['pk_id' => 'fk_t_civilStatus_id']);
+        return $this->hasOne(Civilstatustype::className(), ['pk_id' => 'fk_t_civilstatus_id']);
     }
 
     /**
@@ -195,5 +196,15 @@ class Userprofile extends \yii\db\ActiveRecord
     public function getFkTTransport()
     {
         return $this->hasOne(Transporttype::className(), ['pk_id' => 'fk_t_transport_id']);
+    }
+    
+    /**
+     * Gets query for [[FkAddress]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAddress()
+    {
+        return $this->hasOne(Address::className(), ['pk_id' => 'fk_address_id']);
     }
 }

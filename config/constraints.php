@@ -135,24 +135,37 @@ return [
          "join"   => "userprofile.fk_t_employee_id = employeetype.pk_id",
          "conditions" => []
       ],
-      /*
       [
-         "name" => "Ciudad de residencia",
-         "table" => "citytype",
-         "type" => "REL",
-         "rel" => "address",
-         "field" => "name",
-         "join"   => "userprofile.fk_t_employee_id = employeetype.pk_id",
+         "pk"     => "pk_id",
+         "name"   => "Municipio de residencia",
+         "table"  => "regiontype",
+         "type"   => "REL",
+         "rel"    => "address",
+         "field"  => "name",
+         "join"   => "address.fk_t_region_id = regiontype.pk_id",
          "conditions" => []
       ],
+      
       [
-         "name" => "Municipio de residencia",
-         "table" => "regiontype",
-         "type" => "REL",
-         "rel" => "address",
-         "field" => "name",
+         "pk"     => "pk_id",
+         "name"   => "Ciudad de residencia",
+         "table"  => "citytype",
+         "type"   => "REL",
+         "rel"    => "address",
+         "field"  => "name",
+         "join"   => "address.fk_t_city_id = citytype.pk_id",
          "conditions" => []
-      ]
-      /** */
+         /** #TODO: make a conditional constraint over another field
+         'required_tables' => [
+            [
+               "table" => 'regiontype',
+               "conditions" => [
+                  "regiontype.pk_id = citytype.fk_t_region_id"
+               ]
+            ]
+         ],
+         /** */
+      ],
+      
    ]
 ];

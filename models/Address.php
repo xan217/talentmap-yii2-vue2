@@ -8,8 +8,8 @@ use Yii;
  * This is the model class for table "address".
  *
  * @property int $pk_id
- * @property int $fk_region_id
- * @property int $fk_city_id
+ * @property int $fk_t_region_id
+ * @property int $fk_t_city_id
  * @property string|null $streetType
  * @property string|null $streetNumber
  * @property string|null $streetChar
@@ -40,15 +40,15 @@ class Address extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['fk_region_id', 'fk_city_id'], 'required'],
-            [['fk_region_id', 'fk_city_id'], 'integer'],
+            [['fk_t_region_id', 'fk_t_city_id'], 'required'],
+            [['fk_t_region_id', 'fk_t_city_id'], 'integer'],
             [['streetType', 'streetCardinal', 'intersectionCardinal'], 'string'],
             [['streetNumber', 'intersectionNumber'], 'string', 'max' => 3],
             [['streetChar', 'intersectionChar'], 'string', 'max' => 2],
             [['buildingNumber'], 'string', 'max' => 45],
             [['complement', 'details'], 'string', 'max' => 100],
-            [['fk_city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Citytype::className(), 'targetAttribute' => ['fk_city_id' => 'pk_id']],
-            [['fk_region_id'], 'exist', 'skipOnError' => true, 'targetClass' => Regiontype::className(), 'targetAttribute' => ['fk_region_id' => 'pk_id']],
+            [['fk_t_city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Citytype::className(), 'targetAttribute' => ['fk_t_city_id' => 'pk_id']],
+            [['fk_t_region_id'], 'exist', 'skipOnError' => true, 'targetClass' => Regiontype::className(), 'targetAttribute' => ['fk_t_region_id' => 'pk_id']],
         ];
     }
 
@@ -59,8 +59,8 @@ class Address extends \yii\db\ActiveRecord
     {
         return [
             'pk_id' => 'Pk ID',
-            'fk_region_id' => 'Fk Region ID',
-            'fk_city_id' => 'Fk City ID',
+            'fk_t_region_id' => 'Fk Region ID',
+            'fk_t_city_id' => 'Fk City ID',
             'streetType' => 'Street Type',
             'streetNumber' => 'Street Number',
             'streetChar' => 'Street Char',
@@ -81,7 +81,7 @@ class Address extends \yii\db\ActiveRecord
      */
     public function getFkCity()
     {
-        return $this->hasOne(Citytype::className(), ['pk_id' => 'fk_city_id']);
+        return $this->hasOne(Citytype::className(), ['pk_id' => 'fk_t_city_id']);
     }
 
     /**
@@ -91,6 +91,6 @@ class Address extends \yii\db\ActiveRecord
      */
     public function getFkRegion()
     {
-        return $this->hasOne(Regiontype::className(), ['pk_id' => 'fk_region_id']);
+        return $this->hasOne(Regiontype::className(), ['pk_id' => 'fk_t_region_id']);
     }
 }

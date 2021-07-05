@@ -3,12 +3,12 @@
 namespace app\modules\api\controllers;
 
 use yii\web\Controller;
-use app\models\Gendertype;
+use app\models\Civilstatustype;
 
 /**
  * Default controller for the `api` module
  */
-class GendertypeController extends Controller
+class CivilstatustypeController extends Controller
 {
 
    public $enableCsrfValidation = false;
@@ -46,7 +46,7 @@ class GendertypeController extends Controller
    public function actionList(){
       \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
       if (\Yii::$app->request->isGet) {
-         $data = Gendertype::find()->all();
+         $data = Civilstatustype::find()->all();
          return [
             'status' => 200,
             'type' => 'success',
@@ -62,7 +62,7 @@ class GendertypeController extends Controller
    }
    public function actionCreate(){
       \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-      $model = new Gendertype();
+      $model = new Civilstatustype();
 
       if (\Yii::$app->request->isPost) {
          $model->name = \Yii::$app->request->post('label');
@@ -92,7 +92,7 @@ class GendertypeController extends Controller
       \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
       if (\Yii::$app->request->isPatch) {
-         $model = Gendertype::find()->where(['pk_id' => \Yii::$app->request->getBodyParam('value')])->one();
+         $model = Civilstatustype::find()->where(['pk_id' => \Yii::$app->request->getBodyParam('value')])->one();
          $model->name = \Yii::$app->request->getBodyParam('label');
          if( $model->save() )
             return [
@@ -120,7 +120,7 @@ class GendertypeController extends Controller
       \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
       if (\Yii::$app->request->isDelete) {
-         $model = Gendertype::find()->where(['pk_id' => \Yii::$app->request->getBodyParam('value')])->one();
+         $model = Civilstatustype::find()->where(['pk_id' => \Yii::$app->request->getBodyParam('value')])->one();
          
          if( $model !== null ){
             $model->delete();
