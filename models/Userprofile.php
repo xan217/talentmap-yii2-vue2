@@ -56,7 +56,7 @@ class Userprofile extends \yii\db\ActiveRecord
             [['fk_t_blood_id', 'fk_t_civilstatus_id', 'fk_t_home_id', 'fk_t_transport_id', 'fk_t_smoker_id', 'fk_t_drinker_id', 'fk_t_gender_id', 'fk_t_employee_id', 'fk_address_id'], 'default', 'value' => null],
             [['fk_t_blood_id', 'fk_t_civilstatus_id', 'fk_t_home_id', 'fk_t_transport_id', 'fk_t_smoker_id', 'fk_t_drinker_id', 'fk_t_gender_id', 'fk_t_employee_id', 'fk_address_id', 'childNumber'], 'integer'],
             [['status'], 'string'],
-            [['livesAlone'], 'boolean'],
+            [['livesAlone'], 'string'],
             [['idCard'], 'string', 'max' => 15],
             [['created_at', 'updated_at'], 'safe'],
             [['name', 'lastname'], 'string', 'max' => 100],

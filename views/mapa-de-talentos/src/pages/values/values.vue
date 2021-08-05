@@ -25,12 +25,13 @@
          </v-list>
       </v-navigation-drawer>
       <v-container class="w-74">
-         <div class="values pt-4" v-if="filters.length">
+         <div class="values" v-if="filters.length">
             <Table 
                :tableHeaders="tableHeaders"
                :itemModel="itemModel"
                :formFields="formFields"
                :modelDefinition="modelDefinition"
+               :editable="true"
             />
          </div>
       </v-container>
@@ -93,7 +94,7 @@
       computed: {},
       watch: {
          selectedModel( id ) {
-            if( id >= 0){
+            if( id >= 0 ){
                const filter = this.filters.filter( element => element.id === id );
                this.modelDefinition = filter[0];
             }

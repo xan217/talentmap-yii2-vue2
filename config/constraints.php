@@ -11,7 +11,7 @@ return [
             "table" => "userprofile",
             "field" => "status",
             "condition" => "=",
-            "value" => "ACTIVE"
+            "value" => "ACTIVO"
          ]
       ]
    ],

@@ -49,33 +49,33 @@ class UserprofileController extends Controller
          $users = Userprofile::find()->all();
          $data = array_map( function( $user ){
             return [
-               'id' => $user->pk_id,
-               'name'=> $user->name,
-               'lastname'=> $user->lastname,
-               'idCard'=> $user->idCard,
-               'status'=> $user->status,
-               'bloodtype'=> $user->fk_t_blood_id,
-               'civilstatustype'=> $user->fk_t_civilstatus_id,
-               'hometype'=> $user->fk_t_home_id,
-               'livesAlone'=> $user->livesAlone,
-               'childNumber'=> $user->childNumber,
-               'smokertype'=> $user->fk_t_smoker_id,
-               'transporttype'=> $user->fk_t_transport_id,
-               'drinkertype'=> $user->fk_t_drinker_id,
-               'gendertype'=> $user->fk_t_gender_id,
-               'employeetype'=> $user->fk_t_employee_id,
-               'regiontype'=> $user->address->fk_t_region_id,
-               'citytype'=> $user->address->fk_t_city_id,
-               'streetType'=> $user->address->streetType,
-               'streetNumber'=> $user->address->streetNumber,
-               'streetChar'=> $user->address->streetChar,
-               'streetCardinal'=> $user->address->streetCardinal,
-               'intersectionNumber'=> $user->address->intersectionNumber,
-               'intersectionChar'=> $user->address->intersectionChar,
-               'intersectionCardinal'=> $user->address->intersectionCardinal,
-               'buildingNumber'=> $user->address->buildingNumber,
-               'complement'=> $user->address->complement,
-               'details'=> $user->address->details,
+               'id' => strval($user->pk_id),
+               'name'=> strval($user->name),
+               'lastname'=> strval($user->lastname),
+               'idCard'=> strval($user->idCard),
+               'status'=> strval($user->status),
+               'bloodtype'=> strval($user->fk_t_blood_id),
+               'civilstatustype'=> strval($user->fk_t_civilstatus_id),
+               'hometype'=> strval($user->fk_t_home_id),
+               'livesAlone'=> strval($user->livesAlone),
+               'childNumber'=> strval($user->childNumber),
+               'smokertype'=> strval($user->fk_t_smoker_id),
+               'transporttype'=> strval($user->fk_t_transport_id),
+               'drinkertype'=> strval($user->fk_t_drinker_id),
+               'gendertype'=> strval($user->fk_t_gender_id),
+               'employeetype'=> strval($user->fk_t_employee_id),
+               'regiontype'=> strval($user->address->fk_t_region_id),
+               'citytype'=> strval($user->address->fk_t_city_id),
+               'streetType'=> strval($user->address->streetType),
+               'streetNumber'=> strval($user->address->streetNumber),
+               'streetChar'=> strval($user->address->streetChar),
+               'streetCardinal'=> strval($user->address->streetCardinal),
+               'intersectionNumber'=> strval($user->address->intersectionNumber),
+               'intersectionChar'=> strval($user->address->intersectionChar),
+               'intersectionCardinal'=> strval($user->address->intersectionCardinal),
+               'buildingNumber'=> strval($user->address->buildingNumber),
+               'complement'=> strval($user->address->complement),
+               'details'=> strval($user->address->details),
             ];
          }, $users);
          return [
@@ -133,13 +133,7 @@ class UserprofileController extends Controller
                   'status'    => 200,
                   'type'      => 'success',
                   'message'   => 'Guardado correctamente.',
-                  'data'      => [
-                     'pk_id'     => $user->pk_id,
-                     'name'      => $user->name,
-                     'lastname'  => $user->lastname,
-                     'idCard'    => $user->idCard,
-                     'status'    => self::$status[$user->status],
-                  ]
+                  'data'      => $user
                ];
             }
             else{
@@ -149,13 +143,7 @@ class UserprofileController extends Controller
                   'type'      => 'warning',
                   'message'   => 'El usuario fue guardado correctamente, pero su dirección no pudo ser procesada.',
                   'errors'    => $address->getErrors(),
-                  'data'      => [
-                     'pk_id'     => $user->pk_id,
-                     'name'      => $user->name,
-                     'lastname'  => $user->lastname,
-                     'idCard'    => $user->idCard,
-                     'status'    => self::$status[$user->status],
-                  ]
+                  'data'      => array_merge((array)$user, (array)$address)
                ];
             }
          }
@@ -181,13 +169,13 @@ class UserprofileController extends Controller
 
       if (\Yii::$app->request->isPatch) {
          $user = Userprofile::find()->where(['pk_id' => \Yii::$app->request->getBodyParam('id')])->one();
-         $address = Address::find()->where(['fk_user_id' => $user->fk_address_id])->one();
+         $address = Address::find()->where(['pk_id' => $user->fk_address_id])->one();
 
          $user->name                      = \Yii::$app->request->post('name');
          $user->status                    = \Yii::$app->request->post('status');
          $user->idCard                    = \Yii::$app->request->post('idCard');
          $user->lastname                  = \Yii::$app->request->post('lastname');
-         $user->livesAlone                = \Yii::$app->request->post('hometype') == "" ? null : \Yii::$app->request->post('livesAlone');
+         $user->livesAlone                = \Yii::$app->request->post('livesAlone') == "" ? null : \Yii::$app->request->post('livesAlone');
          $user->childNumber               = \Yii::$app->request->post('childNumber') == "" ? null : \Yii::$app->request->post('childNumber');
          $user->fk_t_home_id              = \Yii::$app->request->post('hometype') == "" ? null : intval(\Yii::$app->request->post('hometype'));
          $user->fk_t_blood_id             = \Yii::$app->request->post('bloodtype') == "" ? null : intval(\Yii::$app->request->post('bloodtype'));
@@ -215,13 +203,7 @@ class UserprofileController extends Controller
                   'status'    => 200,
                   'type'      => 'success',
                   'message'   => 'Guardado correctamente.',
-                  'data'      => [
-                     'pk_id'     => $user->pk_id,
-                     'name'      => $user->name,
-                     'lastname'  => $user->lastname,
-                     'idCard'    => $user->idCard,
-                     'status'    => self::$status[$user->status],
-                  ]
+                  'data'      => array_merge((array)$user, (array)$address)
                ];
             }
             else{
@@ -231,13 +213,7 @@ class UserprofileController extends Controller
                   'type'      => 'warning',
                   'message'   => 'El usuario fue guardado correctamente, pero su dirección no pudo ser procesada.',
                   'errors'    => $address->getErrors(),
-                  'data'      => [
-                     'pk_id'     => $user->pk_id,
-                     'name'      => $user->name,
-                     'lastname'  => $user->lastname,
-                     'idCard'    => $user->idCard,
-                     'status'    => self::$status[$user->status],
-                  ]
+                  'data'      => $user
                ];
             }
          }

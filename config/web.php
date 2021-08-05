@@ -24,6 +24,7 @@ $config = [
             'application/json' => 'yii\web\JsonParser',
             'multipart/form-data' => 'yii\web\MultipartFormDataParser'
          ],
+         'enableCsrfValidation' => false,
       ],
       'cache' => [
          'class' => 'yii\caching\FileCache',

@@ -1,8 +1,9 @@
-import Home    from '@/pages/home/Home'
-import Values    from '@/pages/values/Values'
-import Users    from '@/pages/chart/Users'
-import Graph    from '@/pages/graph/Graph'
-import Charts    from '@/pages/chart/Chart'
+import Home    from '@/pages/home/home'
+import Values    from '@/pages/values/values'
+import Users    from '@/pages/users/users'
+import Graph    from '@/pages/graph/graph'
+import Charts    from '@/pages/chart/chart'
+import Config    from '@/pages/config/config'
 
 const routes = [
    { 
@@ -29,6 +30,11 @@ const routes = [
       path: '/charts', 
       name: 'charts',
       component: Charts 
+   },
+   { 
+      path: '/config', 
+      name: 'config',
+      component: Config 
    },
 ];
 

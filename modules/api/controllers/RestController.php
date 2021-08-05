@@ -82,6 +82,7 @@ class RestController extends Controller
       }
       
       if( $from === null ){
+         $baseQuery->distinct();
          $baseQuery->from( $params['base_table']['name'] );
          if( sizeof( $params['base_table_requirements']['tables']) > 0 ){
             foreach( $params['base_table_requirements']['tables'] as $tableKey => $tableDetails ) {
@@ -93,7 +94,7 @@ class RestController extends Controller
          }
          if( sizeof( $params['base_table_requirements']['constraints']) > 0 ){
             foreach ( $params['base_table_requirements']['constraints'] as $constraintKey => $constraintDetails) {
-               $baseQuery->where( $constraintDetails['table'].'.'.$constraintDetails['field'].' '.$constraintDetails['condition'].' "'.$constraintDetails['value'].'"' );
+               $baseQuery->andWhere( $constraintDetails['table'].'.'.$constraintDetails['field'].' '.$constraintDetails['condition'].' "'.$constraintDetails['value'].'"' );
             }
          }
       }
@@ -109,7 +110,7 @@ class RestController extends Controller
       
       if( $wheres !== null ) {
          foreach( $wheres as $key => $where ){
-            $baseQuery->where( $where );
+            $baseQuery->andWhere( $where );
          }
       }
       
@@ -329,47 +330,53 @@ class RestController extends Controller
       ];
    }
                
-   public function actionGetGroups(){
-      Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-      
-      if( Yii::$app->request->isPost ){
-         $req = Yii::$app->request->post();
+   public function actionGetGroups()
+   {
+      \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+      if( \Yii::$app->request->isPost ){
+         $params = self::params();
+         $req = \Yii::$app->request->post();
          
          if(sizeof($req) == 0){ 
             return [
                'code' => '400',
                'type' => 'warning',
-               'data' => [
-                  'message' => 'No se definieron grupos de condiciones'
-               ]
+               'message' => 'No se definieron grupos de condiciones',
+               'data' => []
             ];
          }
          $data = [];
-            
+
          foreach ($req as $constraintKey => $constraintGroup) {
-            $selects = implode( ', ', $params['node_info'] );
-            $wheres = array_map( 
-               function($constraint){
-                  return array_keys( $constraint )[0].'.name = '.$constraint['name'];
-               },
-               $constraintGroup
+            $constraintGroup = array_filter( 
+               $constraintGroup, 
+               function( $value, $index ){ 
+                  return $value !== '' && $index !== 'displayed'; 
+               }, 
+               ARRAY_FILTER_USE_BOTH 
             );
+
+            $wheres = [];
                
             $joins = [];
             foreach( $constraintGroup as $key => $constraint ){
+               $wheres[] = $key.'.pk_id = '.$constraint;
+
                $join = array_filter(
                   $params['conditions'], 
-                  function($condition){
+                  function( $condition ) use( $key ){
                      return $condition['table'] === $key;
                   }
                )[0];
                $joins[] = [
-                  'type' => 'LEFT JOIN',
+                  'type' => 'JOIN',
                   'table' => $join['table'],
                   'condition' => $join['join']
                ];
             }
-            $data[] = self::buildQuery( $select, true, null, null, $wheres, null, null )->all();
+            // $data[] = self::buildQuery( null, true, null, $joins, $wheres, null, null )->createCommand()->sql;
+            $data[] = self::buildQuery( null, true, null, $joins, $wheres, null, null )->all();
          }
          return [
             'code' => '200',
@@ -397,9 +404,8 @@ class RestController extends Controller
             return [
                'code' => '400',
                'type' => 'warning',
-               'data' => [
-                  'message' => 'No se definieron grupos de condiciones'
-               ]
+               'message' => 'No se definieron grupos de condiciones',
+               'data' => []
             ];
          }
          $data = [];

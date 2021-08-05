@@ -17,6 +17,7 @@ Vue.use(Functions);
 Vue.use(Vuetify);
 Vue.use(VueToast);
 
+
 new Vue({
   vuetify,
   Functions,

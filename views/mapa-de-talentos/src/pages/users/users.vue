@@ -7,6 +7,8 @@
             :formFields="formFields" 
             :selectableLists="selectableLists" 
             :modelDefinition="modelDefinition"
+            :editable="true"
+            @reloadData="loadData"
          />
       </v-container>
    </div>
@@ -28,6 +30,8 @@ export default {
       dialog: false,
       dialogDelete: false,
       selectableLists: [],
+      baseModelDefinition: 
+         { id: null, name: 'Usuario', model: 'userprofile', items: [] },
       modelDefinition: 
          { id: null, name: 'Usuario', model: 'userprofile', items: [] },
       itemModel: 
@@ -157,9 +161,30 @@ export default {
             duration: 5000
          });
       }
+      this.loadData()
    },
    computed: {},
-   methods: {},
+   methods: {
+      async loadData() {
+         this.modelDefinition = Object.assign({}, this.baseModelDefinition);
+         try{
+            await Vue.fetchData('GET', 'userprofile/list')
+            .then( response => {
+               this.modelDefinition.items = response.data;
+            })
+         }
+         catch( e ){
+            console.log(e);
+            Vue.$toast.open({ 
+               message: 'Ha ocurrido un error al cargar los datos',
+               type: 'error',
+               dismissible: true,
+               pauseOnHover: true,
+               duration: 5000
+            });
+         }
+      }
+   },
    watch: {}
 }
 </script>

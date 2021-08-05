@@ -1,5 +1,12 @@
 const Functions = {
    install (Vue) {
+      Vue.company = {
+        name: "Cargando configuración",
+        image: "",
+        primaryColor: "",
+        secondaryColor: "",
+        tertiaryColor: ""
+      }
       Vue.api_route = "http://localhost/CORPREFER/socialgrafo_selling/web/api/";
       Vue.fetchData = async function(method, endpoint = '', data = {}) {
          // Opciones por defecto estan marcadas con un *
@@ -23,7 +30,12 @@ const Functions = {
          
          return response.json(); // parses JSON response into native JavaScript objects
       }
-   }
+      Vue.getCompanyConfig = async function() {
+        const response = await Vue.fetchData( 'GET', 'config/get-config' );
+        if( response.status == 200 )
+          Vue.company = response.data.config;
+      }
+    }
 };
 
 export default Functions;
