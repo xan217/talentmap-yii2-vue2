@@ -8,7 +8,7 @@
          <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
                <v-btn icon color="green" @click="addConstraint()"  v-bind="attrs" v-on="on">
-                  <v-icon>mdi-filter</v-icon>
+                  <v-icon>mdi-filter-plus</v-icon>
                </v-btn>
             </template>
             <span>Agregar grupo condicional</span>
@@ -31,7 +31,7 @@
          </v-tooltip>
          <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-               <v-btn icon color="orange" @click="print()"  v-bind="attrs" v-on="on">
+               <v-btn icon color="gray" @click="print()"  v-bind="attrs" v-on="on">
                   <v-icon>mdi-printer</v-icon>
                </v-btn>
             </template>
@@ -64,6 +64,24 @@
                   </v-col>
                </v-row>
             </v-list-item>
+            <div class="actionButtons">
+              <v-tooltip left>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn fab dark small color="red" @click="removeConstraint(i)" v-bind="attrs" v-on="on">
+                    <v-icon>mdi-eraser</v-icon>
+                  </v-btn>
+                </template>
+                <span>Eliminar grupo condicional</span>
+              </v-tooltip>
+              <v-tooltip left>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn fab dark small color="orange" @click="resetConstraint(i)" v-bind="attrs" v-on="on">
+                    <v-icon>mdi-rotate-left</v-icon>
+                  </v-btn>
+                </template>
+                <span>Reestablecer valores</span>
+              </v-tooltip>
+            </div>
          </v-list-group>
       </v-list>
    </div>
@@ -109,19 +127,26 @@ export default {
    },
    methods: {
       getData(){
-         Vue.fetchData( 'POST', 'rest/get-groups', this.constraints ).then( response => {
-            console.log( response.data );
-            //this.$emit('updateitems', this.data);
-         });
+        this.constraints.forEach( constraint => {
+          delete constraint.displayed;
+        });
+        this.$emit('updateData', this.constraints);
+        
       },
       addConstraint(){
-         let model = Object.assign({}, this.constraintModel );
-         model.displayed = false;
-         this.constraints.push(model);
+        let model = Object.assign({}, this.constraintModel );
+        model.displayed = false;
+        this.constraints.push(model);
       },
       removeContraints(){
-         this.constraints = [];
-         this.addConstraint();
+        this.constraints = [];
+        this.addConstraint();
+      },
+      removeConstraint( i ){
+        this.constraints.splice( i, 1 );
+      },
+      resetConstraint( i ){
+        Object.assign(this.constraints[i], this.constraintModel );
       },
       print(){
          Vue.$toast.open({ 

@@ -1,5 +1,6 @@
 <template>
-   <div class="component_area">
+  <div class="component_container">
+    <div class="flex">
       <v-navigation-drawer permanent class="w-25">
          <v-list-item>
             <v-list-item-content>
@@ -24,7 +25,7 @@
             </v-list-item-group>
          </v-list>
       </v-navigation-drawer>
-      <v-container class="w-74">
+      <v-container class="w-74 mt-3">
          <div class="values" v-if="filters.length">
             <Table 
                :tableHeaders="tableHeaders"
@@ -32,10 +33,12 @@
                :formFields="formFields"
                :modelDefinition="modelDefinition"
                :editable="true"
+               :controller="'models'"
             />
          </div>
       </v-container>
-   </div>
+    </div>
+  </div>
 </template>
 
 <script>

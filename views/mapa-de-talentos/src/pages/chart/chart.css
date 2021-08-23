@@ -1,0 +1,26 @@
+.component_graphics{
+   display: grid;
+   grid-template-columns: 20% 80%;
+   background-color: #edf0f5;
+   padding: 25px;
+}
+
+.component_data {
+  display: flex;
+  flex-flow: column;
+}
+
+.graphic_container {
+  height: 60vh;
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+  align-items: flex-start;
+}
+
+.table_container {
+  width: 100%;
+}
+.chart {
+  height: 100vh;
+}

@@ -88,8 +88,8 @@ class RestController extends Controller
             foreach( $params['base_table_requirements']['tables'] as $tableKey => $tableDetails ) {
                $baseQuery->join(
                   'LEFT JOIN', 
-                  $tableDetails['name'], 
-                  $tableDetails['name'].'.'.$tableDetails['fk'].' = '.$params['base_table']['name'].'.'.$params['base_table']['pk'].'');   
+                  $tableDetails['name'].(isset($tableDetails['alias']) ? ' as '.$tableDetails['alias'] : ''), 
+                  ($tableDetails['alias'] ?? $tableDetails['name']).'.'.$tableDetails['pk'].' = '.$tableDetails['related_table_name'].'.'.$tableDetails['related_table_key'].'');   
             }
          }
          if( sizeof( $params['base_table_requirements']['constraints']) > 0 ){
@@ -303,8 +303,8 @@ class RestController extends Controller
       if( \Yii::$app->request->isGet ){
          $params = self::params();
          
-         $select = 'count(*) as qty';
-         $rows = self::buildQuery( $select, null, true, null, null );
+         $select = ['count(*) as qty'];
+         $rows = self::buildQuery( $select, true, null, null, null, null, null );
          $data = $rows->all();
          
          if( sizeOf($data) == 0 ){
@@ -352,14 +352,15 @@ class RestController extends Controller
             $constraintGroup = array_filter( 
                $constraintGroup, 
                function( $value, $index ){ 
-                  return $value !== '' && $index !== 'displayed'; 
+                  return $value !== ''; 
                }, 
                ARRAY_FILTER_USE_BOTH 
             );
 
+            $select = $params['node_info'];
             $wheres = [];
-               
             $joins = [];
+
             foreach( $constraintGroup as $key => $constraint ){
                $wheres[] = $key.'.pk_id = '.$constraint;
 
@@ -368,15 +369,17 @@ class RestController extends Controller
                   function( $condition ) use( $key ){
                      return $condition['table'] === $key;
                   }
-               )[0];
+               );
+               $join = reset( $join );
                $joins[] = [
                   'type' => 'JOIN',
                   'table' => $join['table'],
                   'condition' => $join['join']
                ];
             }
-            // $data[] = self::buildQuery( null, true, null, $joins, $wheres, null, null )->createCommand()->sql;
-            $data[] = self::buildQuery( null, true, null, $joins, $wheres, null, null )->all();
+
+            //$data[] = self::buildQuery( null, true, null, $joins, $wheres, null, null )->createCommand()->sql;
+            $data[] = self::buildQuery( $select, true, null, $joins, $wheres, null, null )->all();
          }
          return [
             'code' => '200',
@@ -394,13 +397,13 @@ class RestController extends Controller
    }
                         
    public function actionGetGraphics(){
-      Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+      \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
       
-      if( Yii::$app->request->isPost ){
+      if( \Yii::$app->request->isPost ){
          $params = self::params();
-         $req = Yii::$app->request->post();
+         $req = \Yii::$app->request->post();
          
-         if(sizeof($req) == 0){ 
+         if($req === ''){ 
             return [
                'code' => '400',
                'type' => 'warning',
@@ -412,31 +415,41 @@ class RestController extends Controller
          
          $selects = [ 'name' ];
          $orderBy = [
-            'order' => $req.'.name',
-            'type' => 'ASC'
+            [
+              'order' => $req.'.name',
+              'type' => 'ASC'
+            ]
          ];
-         $groupBy = [ $req.'.name' ];
+         $groupBy = [ 
+           ['group' => $req.'.name']
+         ];
          $values = self::buildQuery( $selects, false, $req, null, null, $orderBy, null )->all();
          
          foreach ($values as $key => $value) {
-            $selects = [ 'count(*)' ];
+            $selects = [ 'count(*) as qty' ];
             $where = [
-               $req.'.name = '.$value['name']
+               $req.'.name = "'.$value['name'].'"'
             ];
             $conditionJoin = array_filter(
-               $params, 
-               function($condition){
+               $params['conditions'], 
+               function($condition) use ($req){
                   return $condition['table'] == $req; 
                }
             );
-            $join = [
-               'type' => 'LEFT JOIN',
-               'table' => $req,
-               'condition' => $conditionJoin[0]['join']
+            $join = reset( $conditionJoin );
+            $joins = [
+              [
+                'type' => 'LEFT JOIN',
+                'table' => $req,
+                'condition' => $join['join']
+              ]
             ];
             
-            $qty = self::buildQuery( $selects, true, null, $join, $where, $orderBy, $groupBy )->all();
-            $data[] = [ $value['name'] => $qty ];
+            $qty = self::buildQuery( $selects, true, null, $joins, $where, $orderBy, $groupBy )->all();
+            if( is_array($qty) && sizeof($qty) > 0)
+              $data[] = [ $value['name'] => $qty[0]['qty'] ];
+            else
+              $data[] = [ $value['name'] => '0' ];
          }
          return [
             'code' => '200',

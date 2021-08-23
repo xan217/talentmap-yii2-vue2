@@ -1,6 +1,6 @@
 <template>
-   <div class="subcomponent-container">
-      <v-data-table :headers="tableHeaders" :items="modelDefinition.items" class="elevation-2" >
+   <div class="subcomponent-container" v-if="tableHeaders.length && modelDefinition.items">
+      <v-data-table :headers="tableHeaders" :items="modelDefinition.items" class="elevation-2" locale="es">
          <template v-slot:top>
             <v-toolbar flat >
                <v-toolbar-title>{{ modelDefinition.name || 'Seleccione un Filtro' }}</v-toolbar-title>
@@ -134,11 +134,14 @@
          formFields: [],
          selectableLists: [],
          modelDefinition: {},
-         editable: null
+         editable: null,
+         controller: null
       },
       mounted () {
          this.defaultItem = Object.assign({}, this.itemModel);
-         this.editedItem = Object.assign({}, this.itemModel);        
+         this.editedItem = Object.assign({}, this.itemModel);   
+         console.log('tableHeaders', this.tableHeaders)     
+         console.log('modelDefinition', this.modelDefinition)     
          // #TODO: Subcondition issue
          // this.conditionalSelects = this.modelDefinition.items.filter( item => item.rerequirement );
       },
@@ -160,7 +163,7 @@
          
          deleteItemConfirm () {
             const editedIndex = this.editedIndex;
-            Vue.fetchData('DELETE', `models/delete?name=${this.modelDefinition.model}`, this.editedItem )
+            Vue.fetchData('DELETE', `${this.controller}/delete?name=${this.modelDefinition.model}`, this.editedItem )
             .then( response => {
                if( response.status === 200 ){
                   this.modelDefinition.items.splice( editedIndex, 1 );
@@ -198,7 +201,7 @@
             if( this.editedIndex > -1 ){
                await Vue.fetchData(
                   'PATCH', 
-                  `models/update?name=${this.modelDefinition.model}`, 
+                  `${this.controller}/update?name=${this.modelDefinition.model}`, 
                   this.editedItem
                )
                .then( response => {
@@ -211,7 +214,7 @@
             else{
                await Vue.fetchData(
                   'POST', 
-                  `models/create?name=${this.modelDefinition.model}`, 
+                  `${this.controller}/create?name=${this.modelDefinition.model}`, 
                   this.editedItem
                )
                .then( response => {

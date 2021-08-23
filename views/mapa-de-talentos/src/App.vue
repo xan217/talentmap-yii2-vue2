@@ -17,7 +17,7 @@
                <v-tab v-for="(item, index) in items" :key="index" :click="currentView = item.component">
                   <p>{{ item.name }}<br></p>
                   <v-icon>{{ item.icon }}</v-icon>
-               </v-tab>
+               </v-tab> 
             </v-tabs>
          </template>
       </v-toolbar>

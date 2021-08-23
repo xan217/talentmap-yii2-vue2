@@ -5,7 +5,28 @@ return [
       "pk" => "pk_id"
    ],
    "base_table_requirements" => [
-      "tables" => [],
+      "tables" => [
+        [
+          "name" => "address",
+          "pk" => "pk_id",
+          "related_table_name" => "userprofile",
+          "related_table_key" => "fk_address_id",
+        ],
+        [
+          "name" => "gendertype",
+          "alias" => "genderT",
+          "pk" => "pk_id",
+          "related_table_name" => "userprofile",
+          "related_table_key" => "fk_t_gender_id",
+        ],
+        [
+          "name" => "civilstatustype",
+          "alias" => "civilstatusT",
+          "pk" => "pk_id",
+          "related_table_name" => "userprofile",
+          "related_table_key" => "fk_t_civilstatus_id",
+        ]
+      ],
       "constraints" => [
          [
             "table" => "userprofile",
@@ -16,9 +37,12 @@ return [
       ]
    ],
    "node_info" => [
-      "ID" => "userprofile.pk_id",
-      "name" => "userprofile.name",
-      "lastname" => "useprofile.lastname"
+      "userprofile.pk_id",
+      "userprofile.name",
+      "userprofile.idCard",
+      "userprofile.lastname",
+      "genderT.name as gender",
+      "civilstatusT.name as civilStatus"
    ],
    "user_card" => [
       "personal" => [

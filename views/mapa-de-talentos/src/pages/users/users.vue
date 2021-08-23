@@ -1,5 +1,5 @@
 <template>
-   <div class="component_area">
+   <div class="component_container">
       <v-container>
          <Table 
             :tableHeaders="tableHeaders" 
@@ -8,6 +8,7 @@
             :selectableLists="selectableLists" 
             :modelDefinition="modelDefinition"
             :editable="true"
+            :controller="'userprofile'"
             @reloadData="loadData"
          />
       </v-container>

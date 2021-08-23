@@ -1,0 +1,10 @@
+.actionButtons{
+  width: min-content;
+  display: flex;
+  flex-flow: row-reverse;
+  justify-content: flex-start;
+  width: 100%;
+}
+.actionButtons .v-btn{
+  margin: 5px 10px;
+}

@@ -1,0 +1,84 @@
+.v-dialog{
+  background-color: white;
+}
+.faded {
+  opacity: 0.1;
+  transition: 0.3s opacity;
+}
+.highlight {
+  opacity: 1;
+}
+path.link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+path.link.dependencia {
+  stroke: #005900;
+  stroke-dasharray: 5, 2;
+}
+path.link.anclaje {
+  stroke: #7f3f00;
+}
+
+circle {
+  fill: #ffff99;
+  stroke: #191900;
+  stroke-width: 1.5px;
+}
+circle.sistema {
+  fill: #d085ff;
+  stroke: #5d0085;
+}
+circle.consulta {
+  fill: #ffe0b2;
+  stroke: #663500;
+}
+circle.persona {
+  fill: #96ff8d;
+  stroke: #10a000;
+}
+circle.selected {
+  stroke: rgb(240, 124, 0) !important;
+  stroke-width: 3px;
+  animation: selected 2s infinite alternate ease-in-out;
+}
+
+@keyframes selected {
+  from {
+    stroke-width: 5px;
+    r: 26;
+  }
+  to {
+    stroke-width: 1px;
+    r: 30;
+  }
+}
+
+svg text[text-anchor="left"], svg g text.caption {
+  font: 10pt sans-serif !important;
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
+
+rect.caption {
+  fill: #CCCCCCAC;
+  stroke: #666;
+  stroke-width: 1px;
+  position: relative;
+  margin-bottom: 20px;
+  margin-right: 20px;
+}
+text.caption {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.graph-container {
+  width: calc(100% - 50px);
+  height: 80vh;
+  border: none;
+  margin: 0 auto;
+  box-shadow: 0px 4px 7px gray;
+  background-color: white;
+}
