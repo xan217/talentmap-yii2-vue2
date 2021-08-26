@@ -19,7 +19,7 @@ class Languagetype extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'languagetype';
+        return 'languageType';
     }
 
     /**

@@ -19,7 +19,7 @@ class Citytype extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'citytype';
+        return 'cityType';
     }
 
     /**

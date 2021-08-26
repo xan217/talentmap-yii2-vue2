@@ -19,7 +19,7 @@ class Bloodtype extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'bloodtype';
+        return 'bloodType';
     }
 
     /**

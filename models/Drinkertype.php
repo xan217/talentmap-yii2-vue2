@@ -19,7 +19,7 @@ class Drinkertype extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'drinkertype';
+        return 'drinkerType';
     }
 
     /**

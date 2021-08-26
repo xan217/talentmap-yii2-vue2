@@ -19,7 +19,7 @@ class Civilstatustype extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'civilstatustype';
+        return 'civilStatusType';
     }
 
     /**

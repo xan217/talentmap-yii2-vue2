@@ -19,7 +19,7 @@ class Gendertype extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'gendertype';
+        return 'genderType';
     }
 
     /**

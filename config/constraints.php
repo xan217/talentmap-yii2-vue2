@@ -13,14 +13,14 @@ return [
           "related_table_key" => "fk_address_id",
         ],
         [
-          "name" => "gendertype",
+          "name" => "genderType",
           "alias" => "genderT",
           "pk" => "pk_id",
           "related_table_name" => "userprofile",
           "related_table_key" => "fk_t_gender_id",
         ],
         [
-          "name" => "civilstatustype",
+          "name" => "civilStatusType",
           "alias" => "civilstatusT",
           "pk" => "pk_id",
           "related_table_name" => "userprofile",
@@ -91,93 +91,93 @@ return [
          "pk"     => "pk_id",
          "type"   => "ACQ",
          "name"   => "Tipo de Sangre",
-         "table"  => "bloodtype",
+         "table"  => "bloodType",
          "field"  => "name",
-         "join"   => "userprofile.fk_t_blood_id = bloodtype.pk_id",
+         "join"   => "userprofile.fk_t_blood_id = bloodType.pk_id",
          "conditions" => []
       ],
       [
          "pk"     => "pk_id",
          "type"   => "ACQ",
          "name"   => "Género",
-         "table"  => "gendertype",
+         "table"  => "genderType",
          "field"  => "name",
-         "join"   => "userprofile.fk_t_gender_id = gendertype.pk_id",
+         "join"   => "userprofile.fk_t_gender_id = genderType.pk_id",
          "conditions" => []
       ],
       [
          "pk"     => "pk_id",
          "type"   => "ACQ",
          "name"   => "Estado Civil",
-         "table"  => "civilstatustype",
+         "table"  => "civilStatusType",
          "field"  => "name",
-         "join"   => "userprofile.fk_t_civilstatus_id = civilstatustype.pk_id",
+         "join"   => "userprofile.fk_t_civilstatus_id = civilStatusType.pk_id",
          "conditions" => []
       ],
       [
          "pk"     => "pk_id",
          "type"   => "ACQ",
          "name"   => "Tipo de Vivienda",
-         "table"  => "hometype",
+         "table"  => "homeType",
          "field"  => "name",
-         "join"   => "userprofile.fk_t_home_id = hometype.pk_id",
+         "join"   => "userprofile.fk_t_home_id = homeType.pk_id",
          "conditions" => []
       ],
       [
          "pk"     => "pk_id",
          "type"   => "ACQ",
          "name"   => "Tipo de Transporte",
-         "table"  => "transporttype",
+         "table"  => "transportType",
          "field"  => "name",
-         "join"   => "userprofile.fk_t_transport_id = transporttype.pk_id",
+         "join"   => "userprofile.fk_t_transport_id = transportType.pk_id",
          "conditions" => []
       ],
       [
          "pk"     => "pk_id",
          "type"   => "ACQ",
          "name"   => "Tipo de Fumador",
-         "table"  => "smokertype",
+         "table"  => "smokerType",
          "field"  => "name",
-         "join"   => "userprofile.fk_t_smoker_id = smokertype.pk_id",
+         "join"   => "userprofile.fk_t_smoker_id = smokerType.pk_id",
          "conditions" => []
       ],
       [
          "pk"     => "pk_id",
          "type"   => "ACQ",
          "name"   => "Frecuencia de ingesta de alcohol",
-         "table"  => "drinkertype",
+         "table"  => "drinkerType",
          "field"  => "name",
-         "join"   => "userprofile.fk_t_drinker_id = drinkertype.pk_id",
+         "join"   => "userprofile.fk_t_drinker_id = drinkerType.pk_id",
          "conditions" => []
       ],
       [
          "pk"     => "pk_id",
          "type"   => "ACQ",
          "name"   => "Tipo de empleo",
-         "table"  => "employeetype",
+         "table"  => "employeeType",
          "field"  => "name",
-         "join"   => "userprofile.fk_t_employee_id = employeetype.pk_id",
+         "join"   => "userprofile.fk_t_employee_id = employeeType.pk_id",
          "conditions" => []
       ],
       [
          "pk"     => "pk_id",
          "name"   => "Municipio de residencia",
-         "table"  => "regiontype",
+         "table"  => "regionType",
          "type"   => "REL",
          "rel"    => "address",
          "field"  => "name",
-         "join"   => "address.fk_t_region_id = regiontype.pk_id",
+         "join"   => "address.fk_t_region_id = regionType.pk_id",
          "conditions" => []
       ],
       
       [
          "pk"     => "pk_id",
          "name"   => "Ciudad de residencia",
-         "table"  => "citytype",
+         "table"  => "cityType",
          "type"   => "REL",
          "rel"    => "address",
          "field"  => "name",
-         "join"   => "address.fk_t_city_id = citytype.pk_id",
+         "join"   => "address.fk_t_city_id = cityType.pk_id",
          "conditions" => []
          /** #TODO: make a conditional constraint over another field
          'required_tables' => [

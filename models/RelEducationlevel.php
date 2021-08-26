@@ -23,7 +23,7 @@ class RelEducationlevel extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'rel_educationlevel';
+        return 'rel_educationLevel';
     }
 
     /**

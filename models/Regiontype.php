@@ -19,7 +19,7 @@ class Regiontype extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'regiontype';
+        return 'regionType';
     }
 
     /**

@@ -19,7 +19,7 @@ class Smokertype extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'smokertype';
+        return 'smokerType';
     }
 
     /**

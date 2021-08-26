@@ -19,7 +19,7 @@ class Educationleveltype extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'educationleveltype';
+        return 'educationLevelType';
     }
 
     /**
