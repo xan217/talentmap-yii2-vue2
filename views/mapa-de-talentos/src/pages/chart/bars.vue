@@ -1,5 +1,5 @@
 <template>
-    <v-chart class="chart" :option="option" />
+    <v-chart class="chart" :option="option" style="width: 100%!important" />
 </template>
 
 <script>
@@ -40,7 +40,6 @@ export default {
   watch: {
     option: {
       async handler(newVal){
-        console.log( 'newVal', newVal );
         this.localProps = Object.assign( {}, newVal );
       }
     }

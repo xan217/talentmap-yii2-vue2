@@ -75,7 +75,6 @@ export default {
   async mounted () {
     await Vue.getCompanyConfig();
     this.company = Vue.company;
-    console.log('company in app', this.company);
   }
 };
 </script>

@@ -5,6 +5,7 @@ namespace app\modules\api\controllers;
 use yii\web\Controller;
 use yii\helpers\Url;
 use yii\db\Query;
+use app\models\Config;
 
 /**
 * Default controller for the `api` module
@@ -137,6 +138,9 @@ class RestController extends Controller
          $conditionalGroup = [];
          
          foreach($params['conditions'] as $key => $condition){
+
+            $tableStatus = Config::find()->where(['field' => $condition['table']])->one();
+            if( $tableStatus->value !== 'active' ) continue;
             
             $condition_parsed = [
                'id'     => $key,

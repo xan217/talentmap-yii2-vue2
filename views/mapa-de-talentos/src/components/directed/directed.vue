@@ -266,7 +266,7 @@ export default {
       },
       updateForces() {
         const { simulation, forceProperties, width, height } = this;
-        console.log(width);
+  
         simulation.force("center")
         .x(width  * forceProperties.center.x )
         .y(height * forceProperties.center.y )
@@ -471,12 +471,10 @@ export default {
     watch: {
       data: {
         handler(newData) {
-          console.log(newData);
           if(newData != null){
             this.updateData();
           }
           else{
-            //console.log(newData);
             this.data.nodes = null;
             this.data.links = null;
             this.simulation.restart();

@@ -61,16 +61,16 @@ export default {
          ]},
 
          { label: 'Salud',                   type: 'block',                size: 12},
-         { label: 'Género',                  field: 'gendertype',          size: 3, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
-         { label: 'Tipo de sangre',          field: 'bloodtype',           size: 3, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
-         { label: 'Tipo de fumador',         field: 'smokertype',          size: 3, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
-         { label: 'Ingesta de alcohol',      field: 'drinkertype',         size: 3, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
+         { label: 'Género',                  field: 'genderType',          size: 3, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
+         { label: 'Tipo de sangre',          field: 'bloodType',           size: 3, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
+         { label: 'Tipo de fumador',         field: 'smokerType',          size: 3, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
+         { label: 'Ingesta de alcohol',      field: 'drinkerType',         size: 3, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
          
          { label: 'Entorno personal',        type: 'block',                size: 12},
-         { label: 'Estado civil',            field: 'civilstatustype',     size: 4, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
-         { label: 'Tipo de vivienda',        field: 'hometype',            size: 4, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
-         { label: 'Tipo de transporte',      field: 'transporttype',       size: 4, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
-         { label: 'Tipo de empleado',        field: 'employeetype',        size: 4, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
+         { label: 'Estado civil',            field: 'civilStatusType',     size: 4, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
+         { label: 'Tipo de vivienda',        field: 'homeType',            size: 4, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
+         { label: 'Tipo de transporte',      field: 'transportType',       size: 4, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
+         { label: 'Tipo de empleado',        field: 'employeeType',        size: 4, type: 'select',   required: false,   containerClasses: '', fieldClasses: '', list: []},
          { label: 'Número de hijos',         field: 'childNumber',         size: 4, type: 'number',   required: false,   containerClasses: '', fieldClasses: ''},
          { label: 'Vive solo',               field: 'livesAlone',          size: 4, type: 'enum',     required: false,   containerClasses: '', fieldClasses: '',
          list: [
@@ -79,8 +79,8 @@ export default {
          ]},
 
          { label: 'Dirección',               type: 'block',                size: 12},
-         { label: 'Municipio',               field: 'regiontype',          size: 6, type: 'select',   required: true,    containerClasses: '', fieldClasses: 'required', list: []},
-         { label: 'Ciudad',                  field: 'citytype',            size: 6, type: 'select',   required: true,    containerClasses: '', fieldClasses: 'required', list: []},
+         { label: 'Municipio',               field: 'regionType',          size: 6, type: 'select',   required: true,    containerClasses: '', fieldClasses: 'required', list: []},
+         { label: 'Ciudad',                  field: 'cityType',            size: 6, type: 'select',   required: true,    containerClasses: '', fieldClasses: 'required', list: []},
          { label: 'Tipo de Calle',           field: 'streetType',          size: 3, type: 'enum',     required: false,   containerClasses: '', fieldClasses: '', 
          list: [
             { text: 'Avenida',               value: 'AVENIDA' },
@@ -124,28 +124,36 @@ export default {
       try{
          let selectableLists;
          let formFields = this.formFields;
-         await Vue.fetchData('GET', 'rest/get-conditions')
-         .then( response => {
-            selectableLists = response.data.map( constraint => ({
-               id: constraint.id,
-               name: constraint.label,
-               model: constraint.field,
-               items: constraint.values
-            }));
+         const response = await Vue.fetchData('GET', 'rest/get-conditions')
+          selectableLists = response.data.map( constraint => ({
+              id: constraint.id,
+              name: constraint.label,
+              model: constraint.field,
+              items: constraint.values
+          }));
 
-            formFields.forEach( field => {
-               if( field.type === 'select' ){
-                  field.list = selectableLists
-                                 .filter( list => list.model === field.field )[0]
-                                 .items.map( item => (
-                                    { text: item.label, value: item.value }
-                                 ));
-               }
+          const tables = await Vue.fetchData( 'GET', 'config/get-tables' );
+          const inactiveTables = tables.data.tables.filter( table => table.value === 'inactive');
+
+          inactiveTables.forEach( table => {
+            const fieldIndex = formFields.findIndex( field => { 
+              return typeof field !== 'undefined' && field.field === table.field 
             });
+            formFields.splice(fieldIndex, 1);
+          })
 
-            this.selectableLists = selectableLists;
-            this.formFields = formFields;
-         });
+          formFields.forEach( field => {
+            if( field.type === 'select' ){
+              selectableLists.filter( list => list.model === field.field )[0]
+                              .items.map( item => (
+                                { text: item.label, value: item.value }
+                              ));
+
+              }
+          });
+
+          this.selectableLists = selectableLists;
+          this.formFields = formFields;
 
          await Vue.fetchData('GET', 'userprofile/list')
          .then( response => {

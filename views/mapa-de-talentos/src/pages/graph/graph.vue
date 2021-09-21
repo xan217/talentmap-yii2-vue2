@@ -67,8 +67,6 @@ export default {
         this.user_count = 0;
         this.d3_structured_data = [];
         this.filtered_groups = serverResponse.data;
-
-        console.log( ' empty tabledata', tableData )
         
         let nodes = [];
         let links = [];
@@ -107,9 +105,7 @@ export default {
           });
         });
 
-        console.log( ' filled tabledata', tableData )
         this.tableData = tableData;
-        console.log( ' using tabledata', this.tableData )
 
         this.d3_structured_data.push({"nodes":nodes, "links":links});
         this.data = this.d3_structured_data[0];

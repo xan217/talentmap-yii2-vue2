@@ -50,7 +50,7 @@
     },
     data: () => ({
       filter: '',
-      company: null,
+      company: Vue.company,
       base_model: null,
       height: 900,
       legend_title: '',
@@ -228,7 +228,6 @@
     watch: {
       filter: {
         async handler(newFilter) {
-          console.log( newFilter );
           this.presentation_bars = false;
           this.presentation_pie = false;
 
@@ -272,7 +271,6 @@
             }));
             
             this.overlay = false;
-            console.log(this.options.bars);
           });
         },
       },

@@ -139,9 +139,7 @@
       },
       mounted () {
          this.defaultItem = Object.assign({}, this.itemModel);
-         this.editedItem = Object.assign({}, this.itemModel);   
-         console.log('tableHeaders', this.tableHeaders)     
-         console.log('modelDefinition', this.modelDefinition)     
+         this.editedItem = Object.assign({}, this.itemModel);  
          // #TODO: Subcondition issue
          // this.conditionalSelects = this.modelDefinition.items.filter( item => item.rerequirement );
       },

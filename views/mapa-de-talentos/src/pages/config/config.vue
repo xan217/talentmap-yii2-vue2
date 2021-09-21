@@ -1,12 +1,10 @@
 <template>
    <div class="component_area_home">
-      <div class="page_title">
-         <h3 class="project_title">
-            Configuración de estilos
-         </h3>
-      </div>
       <div class="description_section_config">
-         <div class="config_form">
+        <div class="config_form">
+          <h4 class="project_title">
+              Configuración de estilos
+          </h4>
            <div class="formField">
              <label>Nombre de la empresa</label>
              <input type="text" v-model="company.name">
@@ -27,6 +25,18 @@
             <div class="formFieldInline">
               <label>Color terciario</label>
               <input type="color" v-model="company.tertiaryColor">
+            </div>
+          </div>
+          <h4 class="project_title">
+              Campos condicionales
+          </h4>
+          <div class="colors">
+            <div class="formFieldInline" v-for="(table, index) in tables" :key="index">
+              <v-switch
+                :color="company.primaryColor"
+                v-model="table.status"
+                :label="table.mask"
+              ></v-switch>
             </div>
           </div>
           <div class="formField">
@@ -50,8 +60,13 @@
       data: () => ({
         company: Vue.company,
         selectedFile: null,
-        formData: null
+        formData: null,
+        tables: []
       }),
+      async mounted() {
+        const response = await Vue.fetchData("GET", 'config/get-tables');
+        this.tables = response.data.tables.map( table => ({ ...table, status: table.value === 'active' }));
+      },
       methods: {
         async saveChanges(){
           try{
@@ -75,10 +90,21 @@
               });
             }
 
-            console.log(this.company);
             const serverResponse = await Vue.fetchData( 'POST', 'config/save', this.company );
             if( serverResponse.status === 200 ){
               Vue.company = serverResponse.data.config;
+            }
+            
+            this.tables = this.tables.map( table => ({
+              ...table, 
+              value: table.status 
+                ? 'active' 
+                : 'inactive' 
+            }) );
+
+            const tablesResponse = await Vue.fetchData( 'POST', 'config/save-tables', {tables: this.tables});
+            if( tablesResponse.status === 200 ){
+              this.tables = tablesResponse.data.tables;
             }
 
             Vue.$toast.open({ 
@@ -87,6 +113,14 @@
               dismissible: true,
               pauseOnHover: true,
               duration: serverResponse.type === 'error' ? 5000 : 3000
+            });
+
+            Vue.$toast.open({ 
+              message: tablesResponse.message,
+              type: tablesResponse.type,
+              dismissible: true,
+              pauseOnHover: true,
+              duration: tablesResponse.type === 'error' ? 5000 : 3000
             });
           }
           catch( e ){

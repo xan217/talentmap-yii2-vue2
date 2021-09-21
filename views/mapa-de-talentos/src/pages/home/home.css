@@ -23,6 +23,8 @@
 .description_section{
   display: grid;
   grid-template-columns: 50% 50%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .description{
@@ -41,4 +43,14 @@
   border-radius: 25px;
   box-shadow: 0px 5px 7px grey;
   margin: 0px 35px 35px;
+}
+
+ul {
+  list-style-type: disc;
+  margin-bottom: 15px;
+}
+
+li{
+  list-style-type: disc;
+  margin-left: 25px;
 }

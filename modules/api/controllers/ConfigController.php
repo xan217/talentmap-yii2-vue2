@@ -45,13 +45,80 @@ class ConfigController extends Controller
      ]);
    }
 
+   public function actionGetTables(){
+      \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+      if (\Yii::$app->request->isGet) {
+        $tables = Config::find()->where(['type' => 'TABLE'])->orderBy([ 'mask' => SORT_ASC ])->all();
+
+        return [
+            'status' => 200,
+            'type' => 'success',
+            'message' => 'OK',
+            'data' => [
+              'tables' => $tables
+            ]
+        ];
+      }
+      return [
+         'status' => 405,
+         'type' => 'error',
+         'message' => 'Tipo de solicitud no aceptada'
+      ];
+   }
+
+   public function actionSaveTables(){
+      \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+      if (\Yii::$app->request->isPost) {
+        $tables = \Yii::$app->request->post('tables');
+
+        $saved = true;
+        foreach( $tables as $object ){
+          $updateTable = Config::find()->where(['field' => $object['field']])->one();
+          $updateTable->value = $object['value'];
+          if( !$updateTable->save() ) $saved = false;
+        }
+
+        if( $saved )
+          return [
+              'status' => 200,
+              'type' => 'success',
+              'message' => 'Lista de tablas guardada correctamente',
+              'data' => [
+                'tables' => $tables
+              ]
+          ];
+        return [
+          'status' => 500,
+          'type' => 'error',
+          'message' => 'El registro no pudo ser guardado'
+        ];
+      }
+      return [
+         'status' => 405,
+         'type' => 'error',
+         'message' => 'Tipo de solicitud no aceptada'
+      ];
+   }
    public function actionGetConfig(){
       \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
       if (\Yii::$app->request->isGet) {
-        $model = Config::find()->where(['pk_id' => 1])->one();
+        $name =             Config::find()->where(['field' => 'name'])->one();
+        $logo =             Config::find()->where(['field' => 'logo'])->one();
+        $primaryColor =     Config::find()->where(['field' => 'primaryColor'])->one();
+        $secondaryColor =   Config::find()->where(['field' => 'secondaryColor'])->one();
+        $tertiaryColor =    Config::find()->where(['field' => 'tertiaryColor'])->one();
 
-        $model->logo = ''.Url::home(true).''.$model->logo;
+        $logo = ''.Url::home(true).''.$logo->value;
+        $model = [
+          'name' => $name->value,
+          'logo' => $logo,
+          'primaryColor' => $primaryColor->value,
+          'secondaryColor' => $secondaryColor->value,
+          'tertiaryColor' => $tertiaryColor->value
+        ];
 
         return [
             'status' => 200,
@@ -70,17 +137,37 @@ class ConfigController extends Controller
    }
    public function actionSave(){
       \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-      $model = Config::find()->one();
-      $logo = $model->logo;
 
       if (\Yii::$app->request->isPost) {
-         $model->name = \Yii::$app->request->post('name');
-         $model->primaryColor = \Yii::$app->request->post('primaryColor');
-         $model->secondaryColor = \Yii::$app->request->post('secondaryColor');
-         $model->tertiaryColor = \Yii::$app->request->post('tertiaryColor');
-         $model->logo = $logo;
+        $saved = false;
 
-         if( $model->save() )
+        $name = Config::find()->where(['field' => 'name'])->one();
+        $name->value = \Yii::$app->request->post('name');
+        if( $name->save() ) $saved = true;
+
+        $primaryColor = Config::find()->where(['field' => 'primaryColor'])->one();
+        $primaryColor->value = \Yii::$app->request->post('primaryColor');
+        if( $primaryColor->save() ) $saved = true;
+        
+        $secondaryColor = Config::find()->where(['field' => 'secondaryColor'])->one();
+        $secondaryColor->value = \Yii::$app->request->post('secondaryColor');
+        if( $secondaryColor->save() ) $saved = true;
+        
+        $tertiaryColor = Config::find()->where(['field' => 'tertiaryColor'])->one();
+        $tertiaryColor->value = \Yii::$app->request->post('tertiaryColor');
+        if( $tertiaryColor->save() ) $saved = true;
+
+        $logo = Config::find()->where(['field' => 'logo'])->one();
+        $logo = ''.Url::home(true).''.$logo->value;
+        $model = [
+          'name' => $name->value,
+          'logo' => $logo,
+          'primaryColor' => $primaryColor->value,
+          'secondaryColor' => $secondaryColor->value,
+          'tertiaryColor' => $tertiaryColor->value
+        ];
+        
+         if( $saved )
             return [
                'status' => 200,
                'type' => 'success',

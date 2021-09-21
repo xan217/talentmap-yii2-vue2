@@ -6,7 +6,6 @@ export default {
 
    }),
    mounted(){
-      console.log('bars');
    },
    medthods: {
 
