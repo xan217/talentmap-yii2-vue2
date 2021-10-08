@@ -7,7 +7,7 @@ const Functions = {
         secondaryColor: "",
         tertiaryColor: ""
       }
-      //Vue.api_route = "http://localhost/CORPREFER/socialgrafo_selling/web/api/";
+      // Vue.api_route = "http://localhost/CORPREFER/socialgrafo_selling/web/api/";
       Vue.api_route = "https://mapadetalentos.corprefer.com/web/api/";
       Vue.fetchData = async function(method, endpoint = '', data = {}) {
          // Opciones por defecto estan marcadas con un *

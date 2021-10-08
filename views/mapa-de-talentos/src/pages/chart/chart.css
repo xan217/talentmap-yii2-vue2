@@ -11,7 +11,7 @@
 }
 
 .graphic_container {
-  height: 60vh;
+  height: 450px;
   width: 100%;
   display: flex;
   flex-flow: row;

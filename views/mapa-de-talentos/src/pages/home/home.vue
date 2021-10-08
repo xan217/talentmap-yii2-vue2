@@ -7,7 +7,7 @@
       </div>
       <div class="description_section">
          <div class="block_container">
-            <img src="https://miro.medium.com/max/1200/1*QmcpRrbaPKV8ofK570-_aA.png" alt="" class="left_image">
+            <img src="https://i.imgur.com/xst1Vtq.jpg" alt="" class="left_image">
          </div>
          <div class="block_container">
             <div class="text">
@@ -39,10 +39,10 @@
             </div>
          </div>
          <div class="block_container">
-            <img src="https://cdn.psdrepo.com/images/2x/daily-ui-032-user-profile-card-free-psd-k9.jpg" alt="" class="right_image">
+            <img src="https://i.imgur.com/aFFkDm0.jpg" alt="" class="right_image">
          </div>
          <div class="block_container">
-            <img src="https://miro.medium.com/max/1200/1*QmcpRrbaPKV8ofK570-_aA.png" alt="" class="left_image">
+            <img src="https://i.imgur.com/oV8UQvc.jpg" alt="" class="left_image">
          </div>
          <div class="block_container">
             <div class="text">
@@ -61,7 +61,7 @@
             </div>
          </div>
          <div class="block_container">
-            <img src="https://miro.medium.com/max/1200/1*QmcpRrbaPKV8ofK570-_aA.png" alt="" class="left_image">
+            <img src="https://i.imgur.com/9lNalmx.jpg" alt="" class="left_image">
          </div>
       </div>
    </div>

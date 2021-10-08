@@ -5,3 +5,13 @@
    border-bottom: 1px solid lightskyblue;
    padding-bottom: 5px;
 }
+.button-print{
+  background-color: #ffffff;
+  color: gray;
+}
+.button-tooltip{
+
+}
+.button-tooltip span{
+  
+}

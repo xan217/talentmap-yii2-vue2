@@ -38,12 +38,12 @@ export default {
       itemModel: 
          { 
             id: '', name: '', lastname: '', idCard: '', status: '', 
-            bloodtype: '', civilstatustype: '', livesAlone: '',
-            hometype: '',  smokertype: '', transporttype: '',
-            drinkertype: '', gendertype: '', 
-            employeetype: '', 
+            bloodType: '', civilstatusType: '', livesAlone: '',
+            homeType: '',  smokerType: '', transportType: '',
+            drinkerType: '', genderType: '', 
+            employeeType: '', 
             // address:
-               regiontype: '', citytype: '', streetType: '',
+               regionType: '', cityType: '', streetType: '',
                streetNumber: '', streetChar: '', streetCardinal: '',
                intersectionNumber: '', intersectionChar: '', intersectionCardinal: '',
                buildingNumber: '', complement: '', details: ''
@@ -144,7 +144,7 @@ export default {
 
           formFields.forEach( field => {
             if( field.type === 'select' ){
-              selectableLists.filter( list => list.model === field.field )[0]
+              field.list = selectableLists.filter( list => list.model === field.field )[0]
                               .items.map( item => (
                                 { text: item.label, value: item.value }
                               ));

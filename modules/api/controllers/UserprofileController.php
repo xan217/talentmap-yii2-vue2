@@ -54,28 +54,28 @@ class UserprofileController extends Controller
                'lastname'=> strval($user->lastname),
                'idCard'=> strval($user->idCard),
                'status'=> strval($user->status),
-               'bloodtype'=> strval($user->fk_t_blood_id),
-               'civilstatustype'=> strval($user->fk_t_civilstatus_id),
-               'hometype'=> strval($user->fk_t_home_id),
+               'bloodType'=> strval($user->fk_t_blood_id),
+               'civilstatusType'=> strval($user->fk_t_civilstatus_id),
+               'homeType'=> strval($user->fk_t_home_id),
                'livesAlone'=> strval($user->livesAlone),
                'childNumber'=> strval($user->childNumber),
-               'smokertype'=> strval($user->fk_t_smoker_id),
-               'transporttype'=> strval($user->fk_t_transport_id),
-               'drinkertype'=> strval($user->fk_t_drinker_id),
-               'gendertype'=> strval($user->fk_t_gender_id),
-               'employeetype'=> strval($user->fk_t_employee_id),
-               'regiontype'=> strval($user->address->fk_t_region_id),
-               'citytype'=> strval($user->address->fk_t_city_id),
-               'streetType'=> strval($user->address->streetType),
-               'streetNumber'=> strval($user->address->streetNumber),
-               'streetChar'=> strval($user->address->streetChar),
-               'streetCardinal'=> strval($user->address->streetCardinal),
-               'intersectionNumber'=> strval($user->address->intersectionNumber),
-               'intersectionChar'=> strval($user->address->intersectionChar),
-               'intersectionCardinal'=> strval($user->address->intersectionCardinal),
-               'buildingNumber'=> strval($user->address->buildingNumber),
-               'complement'=> strval($user->address->complement),
-               'details'=> strval($user->address->details),
+               'smokerType'=> strval($user->fk_t_smoker_id),
+               'transportType'=> strval($user->fk_t_transport_id),
+               'drinkerType'=> strval($user->fk_t_drinker_id),
+               'genderType'=> strval($user->fk_t_gender_id),
+               'employeeType'=> strval($user->fk_t_employee_id),
+               'regionType'=> strval($user->address->fk_t_region_id) ?? null,
+               'cityType'=> strval($user->address->fk_t_city_id) ?? null,
+               'streetType'=> strval($user->address->streetType) ?? null,
+               'streetNumber'=> strval($user->address->streetNumber) ?? null,
+               'streetChar'=> strval($user->address->streetChar) ?? null,
+               'streetCardinal'=> strval($user->address->streetCardinal) ?? null,
+               'intersectionNumber'=> strval($user->address->intersectionNumber) ?? null,
+               'intersectionChar'=> strval($user->address->intersectionChar) ?? null,
+               'intersectionCardinal'=> strval($user->address->intersectionCardinal) ?? null,
+               'buildingNumber'=> strval($user->address->buildingNumber) ?? null,
+               'complement'=> strval($user->address->complement) ?? null,
+               'details'=> strval($user->address->details) ?? null,
             ];
          }, $users);
          return [
@@ -105,22 +105,22 @@ class UserprofileController extends Controller
          $user->lastname                  = \Yii::$app->request->post('lastname');
          $user->livesAlone                = \Yii::$app->request->post('livesAlone') == "" ? null : \Yii::$app->request->post('livesAlone');
          $user->childNumber               = \Yii::$app->request->post('childNumber') == "" ? null : \Yii::$app->request->post('childNumber');
-         $user->fk_t_home_id              = \Yii::$app->request->post('hometype') == "" ? null : intval(\Yii::$app->request->post('hometype'));
-         $user->fk_t_blood_id             = \Yii::$app->request->post('bloodtype') == "" ? null : intval(\Yii::$app->request->post('bloodtype'));
-         $user->fk_t_smoker_id            = \Yii::$app->request->post('smokertype') == "" ? null : intval(\Yii::$app->request->post('smokertype'));
-         $user->fk_t_gender_id            = \Yii::$app->request->post('gendertype') == "" ? null : intval(\Yii::$app->request->post('gendertype'));
-         $user->fk_t_drinker_id           = \Yii::$app->request->post('drinkertype') == "" ? null : intval(\Yii::$app->request->post('drinkertype'));
-         $user->fk_t_employee_id          = \Yii::$app->request->post('employeetype') == "" ? null : intval(\Yii::$app->request->post('employeetype'));
-         $user->fk_t_transport_id         = \Yii::$app->request->post('transporttype') == "" ? null : intval(\Yii::$app->request->post('transporttype'));
-         $user->fk_t_civilstatus_id       = \Yii::$app->request->post('civilstatustype') == "" ? null : intval(\Yii::$app->request->post('civilstatustype'));
+         $user->fk_t_home_id              = \Yii::$app->request->post('homeType') == "" ? null : intval(\Yii::$app->request->post('homeType'));
+         $user->fk_t_blood_id             = \Yii::$app->request->post('bloodType') == "" ? null : intval(\Yii::$app->request->post('bloodType'));
+         $user->fk_t_smoker_id            = \Yii::$app->request->post('smokerType') == "" ? null : intval(\Yii::$app->request->post('smokerType'));
+         $user->fk_t_gender_id            = \Yii::$app->request->post('genderType') == "" ? null : intval(\Yii::$app->request->post('genderType'));
+         $user->fk_t_drinker_id           = \Yii::$app->request->post('drinkerType') == "" ? null : intval(\Yii::$app->request->post('drinkerType'));
+         $user->fk_t_employee_id          = \Yii::$app->request->post('employeeType') == "" ? null : intval(\Yii::$app->request->post('employeeType'));
+         $user->fk_t_transport_id         = \Yii::$app->request->post('transportType') == "" ? null : intval(\Yii::$app->request->post('transportType'));
+         $user->fk_t_civilstatus_id       = \Yii::$app->request->post('civilstatusType') == "" ? null : intval(\Yii::$app->request->post('civilstatusType'));
          if( $user->save() ){
             $address->details                = \Yii::$app->request->post('details');
             $address->complement             = \Yii::$app->request->post('complement');
             $address->streetType             = \Yii::$app->request->post('streetType');
             $address->streetChar             = \Yii::$app->request->post('streetChar');
-            $address->fk_t_city_id           = \Yii::$app->request->post('citytype') == "" ? null : intval(\Yii::$app->request->post('citytype')) ?? null;
+            $address->fk_t_city_id           = \Yii::$app->request->post('cityType') == "" ? null : intval(\Yii::$app->request->post('cityType')) ?? null;
             $address->streetNumber           = \Yii::$app->request->post('streetNumber');
-            $address->fk_t_region_id         = \Yii::$app->request->post('regiontype') == "" ? null : intval(\Yii::$app->request->post('regiontype')) ?? null;
+            $address->fk_t_region_id         = \Yii::$app->request->post('regionType') == "" ? null : intval(\Yii::$app->request->post('regionType')) ?? null;
             $address->streetCardinal         = \Yii::$app->request->post('streetCardinal');
             $address->buildingNumber         = \Yii::$app->request->post('buildingNumber');
             $address->intersectionChar       = \Yii::$app->request->post('intersectionChar');
@@ -177,22 +177,22 @@ class UserprofileController extends Controller
          $user->lastname                  = \Yii::$app->request->post('lastname');
          $user->livesAlone                = \Yii::$app->request->post('livesAlone') == "" ? null : \Yii::$app->request->post('livesAlone');
          $user->childNumber               = \Yii::$app->request->post('childNumber') == "" ? null : \Yii::$app->request->post('childNumber');
-         $user->fk_t_home_id              = \Yii::$app->request->post('hometype') == "" ? null : intval(\Yii::$app->request->post('hometype'));
-         $user->fk_t_blood_id             = \Yii::$app->request->post('bloodtype') == "" ? null : intval(\Yii::$app->request->post('bloodtype'));
-         $user->fk_t_smoker_id            = \Yii::$app->request->post('smokertype') == "" ? null : intval(\Yii::$app->request->post('smokertype'));
-         $user->fk_t_gender_id            = \Yii::$app->request->post('gendertype') == "" ? null : intval(\Yii::$app->request->post('gendertype'));
-         $user->fk_t_drinker_id           = \Yii::$app->request->post('drinkertype') == "" ? null : intval(\Yii::$app->request->post('drinkertype'));
-         $user->fk_t_employee_id          = \Yii::$app->request->post('employeetype') == "" ? null : intval(\Yii::$app->request->post('employeetype'));
-         $user->fk_t_transport_id         = \Yii::$app->request->post('transporttype') == "" ? null : intval(\Yii::$app->request->post('transporttype'));
-         $user->fk_t_civilstatus_id       = \Yii::$app->request->post('civilstatustype') == "" ? null : intval(\Yii::$app->request->post('civilstatustype'));
+         $user->fk_t_home_id              = \Yii::$app->request->post('homeType') == "" ? null : intval(\Yii::$app->request->post('homeType'));
+         $user->fk_t_blood_id             = \Yii::$app->request->post('bloodType') == "" ? null : intval(\Yii::$app->request->post('bloodType'));
+         $user->fk_t_smoker_id            = \Yii::$app->request->post('smokerType') == "" ? null : intval(\Yii::$app->request->post('smokerType'));
+         $user->fk_t_gender_id            = \Yii::$app->request->post('genderType') == "" ? null : intval(\Yii::$app->request->post('genderType'));
+         $user->fk_t_drinker_id           = \Yii::$app->request->post('drinkerType') == "" ? null : intval(\Yii::$app->request->post('drinkerType'));
+         $user->fk_t_employee_id          = \Yii::$app->request->post('employeeType') == "" ? null : intval(\Yii::$app->request->post('employeeType'));
+         $user->fk_t_transport_id         = \Yii::$app->request->post('transportType') == "" ? null : intval(\Yii::$app->request->post('transportType'));
+         $user->fk_t_civilstatus_id       = \Yii::$app->request->post('civilstatusType') == "" ? null : intval(\Yii::$app->request->post('civilstatusType'));
          if( $user->save() ){
             $address->details                = \Yii::$app->request->post('details');
             $address->complement             = \Yii::$app->request->post('complement');
             $address->streetType             = \Yii::$app->request->post('streetType');
             $address->streetChar             = \Yii::$app->request->post('streetChar');
-            $address->fk_t_city_id           = \Yii::$app->request->post('citytype') == "" ? null : intval(\Yii::$app->request->post('citytype')) ?? null;
+            $address->fk_t_city_id           = \Yii::$app->request->post('cityType') == "" ? null : intval(\Yii::$app->request->post('cityType')) ?? null;
             $address->streetNumber           = \Yii::$app->request->post('streetNumber');
-            $address->fk_t_region_id         = \Yii::$app->request->post('regiontype') == "" ? null : intval(\Yii::$app->request->post('regiontype')) ?? null;
+            $address->fk_t_region_id         = \Yii::$app->request->post('regionType') == "" ? null : intval(\Yii::$app->request->post('regionType')) ?? null;
             $address->streetCardinal         = \Yii::$app->request->post('streetCardinal');
             $address->buildingNumber         = \Yii::$app->request->post('buildingNumber');
             $address->intersectionChar       = \Yii::$app->request->post('intersectionChar');

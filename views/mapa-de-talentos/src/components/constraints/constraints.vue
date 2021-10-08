@@ -115,7 +115,6 @@ export default {
          this.addConstraint();
       }
       catch( e ){
-         console.log(e)
          Vue.$toast.open({ 
             message: 'Ha ocurrido un erro al cargar los datos',
             type: 'error',

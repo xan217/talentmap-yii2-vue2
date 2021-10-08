@@ -5,6 +5,7 @@ import Functions from './plugins/functions';
 
 import VueToast from 'vue-toast-notification';
 import Vuetify from 'vuetify/lib';
+import excel from 'vue-excel-export';
 
 import es from 'vuetify/lib/locale/es'
 
@@ -16,6 +17,7 @@ Vue.config.productionTip = false;
 Vue.use(Functions);
 Vue.use(Vuetify);
 Vue.use(VueToast);
+Vue.use(excel)
 
 
 new Vue({

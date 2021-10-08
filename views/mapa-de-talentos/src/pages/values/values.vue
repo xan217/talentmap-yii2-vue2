@@ -98,8 +98,7 @@
       watch: {
          selectedModel( id ) {
             if( id >= 0 ){
-               const filter = this.filters.filter( element => element.id === id );
-               this.modelDefinition = filter[0];
+               this.modelDefinition = this.filters[id];
             }
          }
       }

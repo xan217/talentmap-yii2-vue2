@@ -6,11 +6,11 @@
                <v-toolbar-title>{{ modelDefinition.name || 'Seleccione un Filtro' }}</v-toolbar-title>
                <v-spacer></v-spacer>
                <v-dialog v-model="dialog" max-width="60%" v-if="modelDefinition.name && editable" >
-                  <template v-slot:activator="{ on, attrs }" >
-                     <v-btn :color="companyConfig.primaryColor" dark class="mb-2" v-bind="attrs" v-on="on" >
-                        Agregar
-                     </v-btn>
-                  </template>
+                    <template v-slot:activator="{ on, attrs }" >
+                      <v-btn icon :color="companyConfig.primaryColor" dark  v-bind="attrs" v-on="on" >
+                        <v-icon>mdi-table-row-plus-after</v-icon>
+                      </v-btn>
+                    </template>
                   <v-card v-if="formFields.length">
                      <v-card-title>
                         <span class="text-h5">{{ formTitle }}</span>
@@ -79,10 +79,10 @@
 
                      <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn :color="companyConfig.tertiaryColor" text @click="close" >
+                        <v-btn :color="companyConfig.tertiaryColor" dark @click="close" >
                            Cancelar
                         </v-btn>
-                        <v-btn :color="companyConfig.primaryColor" text @click="save" >
+                        <v-btn :color="companyConfig.primaryColor" dark @click="save" >
                            Guardar
                         </v-btn>
                      </v-card-actions>
@@ -93,12 +93,23 @@
                      <v-card-title class="text-h5">¿Seguro deseas eliminar este registro?</v-card-title>
                      <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn :color="companyConfig.primaryColor" text @click="closeDelete">No</v-btn>
-                        <v-btn :color="companyConfig.tertiaryColor" text @click="deleteItemConfirm">Si</v-btn>
+                        <v-btn :color="companyConfig.primaryColor" dark @click="closeDelete">No</v-btn>
+                        <v-btn :color="companyConfig.tertiaryColor" dark @click="deleteItemConfirm">Si</v-btn>
                         <v-spacer></v-spacer>
                      </v-card-actions>
                   </v-card>
-               </v-dialog>
+               </v-dialog> 
+               <span class="mx-2">|</span>
+               <div class="button-tooltip">
+                  <export-excel
+                    class       = "v-btn v-btn--icon v-btn--round theme--light v-size--default gray--text"
+                    :data       = "json_data"
+                    :fields     = "json_fields"
+                    :worksheet  = "modelDefinition.name"
+                    :name       = "`${modelDefinition.name.replace(' ', '_')}.xls`">
+                    <v-icon>mdi-file-excel</v-icon>
+                  </export-excel>
+                </div>
             </v-toolbar>
          </template>
          <template v-if="tableHeaders[tableHeaders.length - 1].value === 'actions' && editable" v-slot:item.actions="{ item }">
@@ -114,29 +125,29 @@
 </template>
 
 <script>
-   import Vue from 'vue';
+  import Vue from 'vue';
 
-   export default {
-      name: "Users",
-      data: () => ({
-         dialog: false,
-         dialogDelete: false,
-         defaultItem: null,
-         editedItem: null,
-         editedIndex: -1,
-         condotionalSelects: [],
-         responses: [ 'success', 'info', 'warning', 'error', 'default' ],
-         companyConfig: Vue.company
-      }),
-      props: {
-         tableHeaders: [],
-         itemModel: {},
-         formFields: [],
-         selectableLists: [],
-         modelDefinition: {},
-         editable: null,
-         controller: null
-      },
+  export default {
+    name: "Users",
+    data: () => ({
+      dialog: false,
+      dialogDelete: false,
+      defaultItem: null,
+      editedItem: null,
+      editedIndex: -1,
+      condotionalSelects: [],
+      responses: [ 'success', 'info', 'warning', 'error', 'default' ],
+      companyConfig: Vue.company
+    }),
+    props: {
+      tableHeaders: [],
+      itemModel: {},
+      formFields: [],
+      selectableLists: [],
+      modelDefinition: {},
+      editable: null,
+      controller: null
+    },
       mounted () {
          this.defaultItem = Object.assign({}, this.itemModel);
          this.editedItem = Object.assign({}, this.itemModel);  
@@ -261,9 +272,23 @@
          }
       },
       computed: {
-         formTitle () {
+        formTitle () {
             return this.editedIndex === -1 ? `Nuevo ${this.modelDefinition.name}` : `Editar ${this.modelDefinition.name}`
-         },
+        },
+        json_data() {
+          return this.modelDefinition 
+            ? this.modelDefinition.items 
+            : [];
+        },
+        json_fields() {
+          if( !this.tableHeaders ) return {};
+          let fields = {};
+          this.tableHeaders.forEach( header => {
+            if( header.value !== "actions" )
+              fields = {...fields, [`${header.text}`]:  header.value};
+          });
+          return fields;
+        }
       },
       watch: {
          dialog( val ) {
